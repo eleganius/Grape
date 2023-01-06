@@ -21,6 +21,10 @@ img {
 	aspect-ratio: 4 / 3;
 }
 
+.error {
+	color: #f00;
+}
+
 /* articleList */
 
 .hero {

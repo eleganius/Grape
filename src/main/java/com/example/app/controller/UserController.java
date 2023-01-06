@@ -17,17 +17,17 @@ import com.example.app.domain.User;
 
 @Controller
 @RequestMapping("/grape")
-public class LoginController {
+public class UserController {
 
-	@GetMapping("/login")
-	public String loginGet(Model model) {
-		model.addAttribute("title", "ログイン画面");
+	@GetMapping("/addUser")
+	public String addUserGet(Model model) {
+		model.addAttribute("title", "ユーザー登録画面");
 		model.addAttribute("user", new User());
-		return "login";
+		return "users/addUser";
 	}
 
-	@PostMapping("/login")
-	public String loginPost(@Valid @ModelAttribute("user") User user,
+	@PostMapping("/addUser")
+	public String addUserPost(@Valid @ModelAttribute("user") User user,
 			Errors errors, Model model) {
 
 		//バリデーション
@@ -37,10 +37,11 @@ public class LoginController {
 			for (ObjectError obj : objList) {
 				System.out.println(obj.toString());
 			}
-			return "login";
+			return "users/addUser";
 		}
 
 		return "redirect:/grape/articleList";
+
 	}
 
 }

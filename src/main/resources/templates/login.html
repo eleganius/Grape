@@ -6,7 +6,36 @@
 <body>
 	<header th:replace="~{parts/common :: page_header}"></header>
 	<main>
+		<div class="container">
+			<div class="row justify-content-center align-items-center mt-5">
+				<div class="col-6 col-lg-4 justify-content-center align-items-center">
+					<img th:src="@{/images/icon.png}" alt="" width="48" height="48" class="d-block mx-auto mb-4">
+					<h3 class="text-center">ログイン画面</h3>
 
+					<!-- Thymeleafバリデーション -->
+
+					<form action="" method="post" th:object="${user}">
+
+						<label for="email" class="form-label my-2">Email</label>
+						<input type="text" class="form-control" th:field="*{email}">
+						<p><small class="error" th:errors="*{email}"></small></p>
+
+						<label for="loginPass" class="form-label my-2">パスワード</label>
+						<input type="password" class="form-control" th:field="*{loginPass}">
+						<p><small class="error" th:errors="*{loginPass}"></small></p>
+
+						<hr>
+
+						<div class="d-grid gap-2 justify-content-center align-items-center">
+							<button class="btn btn-primary" type="submit">ログイン</button>
+							<a class="btn btn-link" th:href="@{/grape/addUser}" role="button">新規登録</a>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
 	</main>
 	<div th:replace="~{parts/common :: block_script}"></div>
 </body>
