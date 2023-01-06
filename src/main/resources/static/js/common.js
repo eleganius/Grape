@@ -2,15 +2,24 @@
 
 {
 
-	//articleList以外検索フォーム非表示
 	const url = new URL(window.location.href);
 	console.log(url);//デバッグ用
 
-	if (url.pathname !== '/') {
+	//articleList以外検索フォーム非表示
+	if (url.pathname !== '/grape/articleList') {
 
 		const search = document.getElementById('search');
 
 		search.remove();
+
+	}
+
+	//loginまたはaddUserではheader-links非表示
+	if (url.pathname === '/grape/login') {
+
+		const headerLinks = document.getElementById('header-links');
+
+		headerLinks.remove();
 
 	}
 
