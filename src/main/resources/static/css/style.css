@@ -8,13 +8,34 @@ a,
 }
 
 a:hover,
-i:hover,
-.btn-link:hover,
-.img-thumbnail:hover,
-#more:hover,
-#close:hover {
+.btn-link:hover {
 	cursor: pointer;
 	opacity: 0.6;
+}
+
+.bi-suit-heart {
+	cursor: pointer;
+	opacity: 0.6;
+	font-size: 1.0rem;
+	color: gray;
+}
+
+.bi-suit-heart-fill {
+	cursor: pointer;
+	opacity: 0.6;
+	font-size: 1.0rem;
+	color: red;
+}
+
+.bi-chat-dots {
+	font-size: 1.0rem;
+	bottom: 1px;
+	position: relative;
+}
+
+#created {
+	bottom: -3px;
+	position: relative;
 }
 
 img {

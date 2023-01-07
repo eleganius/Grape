@@ -6,10 +6,20 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
+	public User(Integer id, String avatar, @NotBlank String name) {
+		this.id = id;
+		this.avatar = avatar;
+		this.name = name;
+	}
 
 	//DBフィールド
 	private Integer id;
