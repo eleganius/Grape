@@ -9,16 +9,25 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Article {
+public class Comment {
+
+	public Comment(Integer id, String body, Date created, User user) {
+		super();
+		this.id = id;
+		this.body = body;
+		this.created = created;
+		this.user = user;
+	}
 
 	//DBフィールド
 	private Integer id;
 	private Integer userId;
-	private String image;
-	private String bodyText;
+	private Integer articleId;
+	private String body;
 	private Date created;
+	private Date updated;
 
 	//例外フィールド
 	private User user;
-	private Comment comment;
+
 }

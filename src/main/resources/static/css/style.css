@@ -33,8 +33,15 @@ a:hover,
 	position: relative;
 }
 
-#created {
-	bottom: -3px;
+.bi-journal-text {
+	font-size: 1.0rem;
+	bottom: 5px;
+	position: relative;
+}
+
+.created {
+	font-size: 0.5rem;
+	bottom: -7px;
 	position: relative;
 }
 
@@ -74,6 +81,13 @@ img {
 .animate.appear {
 	opacity: 1;
 	transform: none;
+}
+
+/* article */
+
+#creator {
+	bottom: 4px;
+	position: relative;
 }
 
 .note {

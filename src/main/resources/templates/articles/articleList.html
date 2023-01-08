@@ -15,21 +15,21 @@
 	<main class="album bg-light">
 		<div class="container">
 			<div class="row row-cols-sm-2 row-cols-lg-3">
-				<div class="col-sm-6 col-lg-4 my-2 animate"
-					th:each="article : ${articleList}">
+				<div class="col-sm-6 col-lg-4 my-2 animate" th:each="article, status : ${articleList}">
 					<div class="card shadow-sm">
 
 						<!-- 投稿画像 -->
-						<a th:href="@{/article/{id}(id=${article.id})}">
-							<img class="bd-placeholder-img card-img-top img-fluid img-thumbnail"
-								th:src="@{/images/wines/{image}(image=${article.image})}">
+						<a th:href="@{/grape/article/{id}(id=${status.index})}">
+							<img th:src="@{/images/wines/{image}(image=${article.image})}"
+								class="bd-placeholder-img card-img-top img-fluid img-thumbnail">
 						</a>
 
 						<div class="card-body py-2">
 
 							<!-- 投稿者 -->
-							<a th:href="@{/user/{id}(id=${article.userId})}">
-								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32" class="rounded-circle">
+							<a th:href="@{/grape/user/{id}(id=${article.userId})}">
+								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
+									class="rounded-circle">
 								<small class="d-inline-block align-bottom text-black ps-1">
 									<strong>[[${article.user.name}]]</strong>
 								</small>
@@ -58,7 +58,7 @@
 								</span>
 
 								<!-- 投稿日時 -->
-								<small id="created" class="text-muted">
+								<small class="text-muted created">
 									[[${#dates.format(article.created, 'yy-MM-dd HH:mm')}]]
 								</small>
 
@@ -72,7 +72,7 @@
 	<div th:replace="~{parts/common :: block_script}"></div>
 	<script>
 		$(document).ready(function () {
-			
+
 			//heroスライドショー
 			function play() {
 				setTimeout(() => {
