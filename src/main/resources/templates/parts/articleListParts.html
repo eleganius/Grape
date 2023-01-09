@@ -1,0 +1,53 @@
+<div class="row row-cols-sm-2 row-cols-lg-3" th:fragment="page_articleList">
+	<div class="col-sm-6 col-lg-4 my-2 animate" th:each="article, status : ${articleList}">
+		<div class="card shadow-sm">
+
+			<!-- 投稿画像 -->
+			<a th:href="@{/grape/article/{id}(id=${status.index})}">
+				<img th:src="@{/images/wines/{image}(image=${article.image})}"
+					class="bd-placeholder-img card-img-top img-fluid img-thumbnail">
+			</a>
+
+			<div class="card-body py-2">
+
+				<!-- 投稿者 -->
+				<a th:href="@{/grape/user/{id}(id=${status.index})}">
+					<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
+						class="rounded-circle">
+					<small class="d-inline-block align-bottom text-black ps-1">
+						<strong>[[${article.user.name}]]</strong>
+					</small>
+				</a>
+
+				<!-- 投稿内容 -->
+				<p class="card-text text-truncate my-2">
+					[[${article.bodyText}]]
+				</p>
+
+				<div class="d-flex justify-content-between">
+					<span class="d-flex">
+
+						<!-- いいね -->
+						<small class="pe-1">
+							<i class="bi bi-suit-heart-fill iine" data-articleId=""></i>
+							<span id="likeCount">[[${article.like.likeCount}]]</span>
+						</small>
+
+						<!-- コメント -->
+						<small id="dots" class="px-1">
+							<i class="bi bi-chat-dots text-muted"></i>
+							<span id="CommentCount">[[${article.comment.commentCount}]]</span>
+						</small>
+
+					</span>
+
+					<!-- 投稿日時 -->
+					<small class="text-muted created">
+						[[${#dates.format(article.created, 'yy-MM-dd HH:mm')}]]
+					</small>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

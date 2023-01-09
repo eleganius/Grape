@@ -8,41 +8,45 @@ a,
 }
 
 a:hover,
-.btn-link:hover {
+.btn-link:hover,
+.bi-suit-heart,
+.bi-suit-heart-fill {
 	cursor: pointer;
 	opacity: 0.6;
 }
 
-.bi-suit-heart {
-	cursor: pointer;
-	opacity: 0.6;
+.bi-suit-heart,
+.bi-suit-heart-fill,
+.bi-chat-dots,
+.bi-journal-text {
 	font-size: 1.0rem;
+}
+
+.bi-suit-heart {
 	color: gray;
 }
 
 .bi-suit-heart-fill {
-	cursor: pointer;
-	opacity: 0.6;
-	font-size: 1.0rem;
 	color: red;
 }
 
-.bi-chat-dots {
-	font-size: 1.0rem;
-	bottom: 1px;
+.bi-chat-dots,
+.bi-journal-text,
+.created {
 	position: relative;
 }
 
+.bi-chat-dots {
+	bottom: 1px;
+}
+
 .bi-journal-text {
-	font-size: 1.0rem;
 	bottom: 5px;
-	position: relative;
 }
 
 .created {
 	font-size: 0.5rem;
 	bottom: -7px;
-	position: relative;
 }
 
 img {

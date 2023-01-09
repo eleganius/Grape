@@ -13,7 +13,7 @@
 
 						<div class="d-flex align-items-center">
 							<!-- 投稿者 -->
-							<a th:href="@{/grape/user/{id}(id=${article.userId})}" class="me-auto"><!--TODO article.userIdで遷移するには？--> 
+							<a th:href="@{/grape/user/{id}(id=${article.userId})}" class="me-auto"><!--TODO article.userIdで遷移するには？-->
 								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 									class="rounded-circle">
 								<small id="creator" class="d-inline-block align-bottom text-black ps-1">
@@ -36,12 +36,12 @@
 								<!-- いいね -->
 								<small class="pe-1">
 									<i class="bi bi-suit-heart-fill iine" data-articleId=""></i>
-									<span id="likeCount">100</span>
+									<span id="likeCount">[[${article.like.likeCount}]]</span>
 								</small>
 								<!-- コメント -->
 								<small class="px-1">
 									<i class="bi bi-chat-dots text-muted"></i>
-									<span id="CommentCount">100</span>
+									<span id="CommentCount">[[${article.comment.commentCount}]]</span>
 								</small>
 								<!-- offcanvas -->
 								<small>
@@ -108,6 +108,7 @@
 		</div>
 	</main>
 	<div th:replace="~{parts/common :: block_script}"></div>
+	<script th:src="@{/js/iine.js}"></script>
 	<script>
 		$(document).ready(function () {
 
@@ -127,12 +128,6 @@
 				if (!result) {
 					e.preventDefault();
 				}
-			});
-
-			//いいねトグル
-			$('.iine').click(function () {
-				$(this).toggleClass('bi-suit-heart-fill');
-				$(this).toggleClass('bi-suit-heart');
 			});
 
 		});
