@@ -16,13 +16,13 @@ public class UserService {
 	public UserService() {
 		userList = new ArrayList<>();
 
-		userList.add(new User(1, "taro.webp", "太郎",
+		userList.add(new User(0, "taro.webp", "太郎",
 				"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit labore impedit minima tenetur reiciendis laudantium tempore cupiditate doloribus aperiam maxime et ducimus eligendi dolorem vel illum molestiae doloremque. Provident ullam.",
 				new Follow(100, 100)));
-		userList.add(new User(2, "jiro.jpg", "次郎",
+		userList.add(new User(1, "jiro.jpg", "次郎",
 				"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit labore impedit minima tenetur reiciendis laudantium tempore cupiditate doloribus aperiam maxime et ducimus eligendi dolorem vel illum molestiae doloremque. Provident ullam.",
 				new Follow(200, 200)));
-		userList.add(new User(3, "haruko.jpg", "春子",
+		userList.add(new User(2, "haruko.jpg", "春子",
 				"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit labore impedit minima tenetur reiciendis laudantium tempore cupiditate doloribus aperiam maxime et ducimus eligendi dolorem vel illum molestiae doloremque. Provident ullam.",
 				new Follow(300, 300)));
 	}
