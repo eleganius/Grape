@@ -21,6 +21,14 @@ public class User {
 		this.name = name;
 	}
 
+	public User(Integer id, String avatar, @NotBlank String name, @Size(max = 100) String introduction) {
+		super();
+		this.id = id;
+		this.avatar = avatar;
+		this.name = name;
+		this.introduction = introduction;
+	}
+
 	//DBフィールド
 	private Integer id;
 	private String avatar;
