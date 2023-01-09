@@ -1,5 +1,7 @@
 package com.example.app.domain;
 
+import java.util.Date;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -21,12 +23,12 @@ public class User {
 		this.name = name;
 	}
 
-	public User(Integer id, String avatar, @NotBlank String name, @Size(max = 100) String introduction) {
-		super();
+	public User(Integer id, String avatar, @NotBlank String name, @Size(max = 100) String introduction, Follow follow) {
 		this.id = id;
 		this.avatar = avatar;
 		this.name = name;
 		this.introduction = introduction;
+		this.follow = follow;
 	}
 
 	//DBフィールド
@@ -46,5 +48,11 @@ public class User {
 
 	@Size(max = 100)
 	private String introduction;
+
+	private Date created;
+	private Date updated;
+
+	//例外フィールド
+	private Follow follow;
 
 }

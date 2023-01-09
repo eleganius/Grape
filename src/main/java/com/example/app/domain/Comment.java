@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Comment {
 
-	public Comment(Integer id, String body, Date created, User user) {
-		super();
+	public Comment(Integer id, String body, Date created, Integer commentCount, User user) {
 		this.id = id;
 		this.body = body;
 		this.created = created;
+		this.commentCount = commentCount;
 		this.user = user;
 	}
 
@@ -25,9 +25,9 @@ public class Comment {
 	private Integer articleId;
 	private String body;
 	private Date created;
-	private Date updated;
 
 	//例外フィールド
+	private Integer commentCount;
 	private User user;
 
 }
