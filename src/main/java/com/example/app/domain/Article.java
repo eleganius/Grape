@@ -2,6 +2,10 @@ package com.example.app.domain;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Article {
 
-	public Article(Integer id, Integer userId, String image, String bodyText, Date created, User user, Like like,
+	public Article(Integer id, Integer userId, String image, String caption, Date created, User user, Like like,
 			Comment comment) {
 		this.id = id;
 		this.userId = userId;
 		this.image = image;
-		this.bodyText = bodyText;
+		this.caption = caption;
 		this.created = created;
 		this.user = user;
 		this.like = like;
@@ -27,9 +31,15 @@ public class Article {
 	private Integer id;
 	private Integer userId;
 	private String image;
-	private String bodyText;
+
+	@NotBlank
+	@Size(max = 100)
+	private String caption;
+
 	private Date created;
 	private Date updated;
+
+	@NotNull
 	private Integer status;
 
 	//例外フィールド

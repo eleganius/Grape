@@ -1,11 +1,11 @@
-<div class="row row-cols-sm-2 row-cols-lg-3" th:fragment="page_articleList">
-	<div class="col-sm-6 col-lg-4 my-2 animate" th:each="article, status : ${articleList}">
+<div class="row row-cols-md-2 row-cols-lg-3" th:fragment="page_articleList">
+	<div class="col-md-6 col-lg-4 my-2 animate" th:each="article, status : ${articleList}">
 		<div class="card shadow-sm">
 
 			<!-- 投稿画像 -->
 			<a th:href="@{/grape/article/{id}(id=${status.index})}">
 				<img th:src="@{/images/wines/{image}(image=${article.image})}"
-					class="bd-placeholder-img card-img-top img-fluid img-thumbnail">
+					class="img-thumbnail" style="padding: 0.75rem;">
 			</a>
 
 			<div class="card-body py-2">
@@ -21,7 +21,7 @@
 
 				<!-- 投稿内容 -->
 				<p class="card-text text-truncate my-2">
-					[[${article.bodyText}]]
+					[[${article.caption}]]
 				</p>
 
 				<div class="d-flex justify-content-between">
