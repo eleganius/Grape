@@ -8,12 +8,12 @@
 	<main class="album">
 		<div class="container">
 			<div class="row justify-content-center my-2">
-				<div class="col-10 col-sm-8 col-md-4">
+				<div class="col-10 col-sm-8 col-md-6">
 					<div class="card p-2">
 
 						<div class="d-flex align-items-center">
 							<!-- 投稿者 -->
-							<a th:href="@{/grape/user/{id}(id=${article.userId})}" class="me-auto"><!--TODO article.userIdで遷移するには？-->
+							<a th:href="@{/grape/user/{id}(id=${article.userId})}" class="me-auto">
 								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 									class="rounded-circle">
 								<small id="creator" class="d-inline-block align-bottom text-black ps-1">

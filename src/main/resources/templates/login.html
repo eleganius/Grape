@@ -12,17 +12,21 @@
 					<img th:src="@{/images/favicon.png}" alt="" width="48" height="48" class="d-block mx-auto mb-4">
 					<h3 class="text-center">ログイン画面</h3>
 
-					<!-- Thymeleafバリデーション -->
+					<th:block th:object="${loginUser}">
+						<div th:if"${#fields.hasAnyErrors()}">
+							<p><small class="error" th:errors="*{email}"></small></p>
+							<p><small class="error" th:errors="*{loginPass}"></small></p>
+							<p><small class="error" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></small></p>
+						</div>
+					</th:block>
 
-					<form action="" method="post" th:object="${user}">
+					<form action="" method="post" th:object="${loginUser}">
 
-						<label for="email" class="form-label my-2">Email</label>
+						<label for="email" class="form-label my-2">ログインID(Email)</label>
 						<input type="text" class="form-control" th:field="*{email}">
-						<p><small class="error" th:errors="*{email}"></small></p>
 
 						<label for="loginPass" class="form-label my-2">パスワード</label>
 						<input type="password" class="form-control" th:field="*{loginPass}">
-						<p><small class="error" th:errors="*{loginPass}"></small></p>
 
 						<hr>
 

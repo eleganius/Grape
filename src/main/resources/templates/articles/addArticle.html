@@ -17,8 +17,9 @@
 								<img th:src="@{/images/wines/wine0.jpg}" id="prevImage" class="w-100">
 							</div>
 						</label>
-						<input class="form-control form-control-sm" type="file" th:field="*{image}" onchange="previewFile()"><!--TODO ファイルアップロード学習後修正 -->
-						<p><small class="error" th:errors="*{image}"></small></p>
+						<!--  TODO ファイルアップロード学習後実装
+						<input class="form-control form-control-sm" type="file" th:field="*{image}" onchange="previewFile()">
+						-->
 
 						<label for="caption" class="form-label">キャプション</label>
 						<textarea class="form-control" rows="4" th:field="*{caption}"

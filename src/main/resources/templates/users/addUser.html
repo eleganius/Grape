@@ -16,13 +16,18 @@
 							<img th:src="@{/images/user_icon.png}" id="prevImage" width="125px" height="125px"
 								style="border-radius: 50%; object-fit: cover;">
 						</label>
+						<!--  TODO ファイルアップロード学習後実装
 						<input class="form-control form-control-sm" type="file" th:field="*{avatar}"
 							onchange="previewFile()">
-						<p><small class="error" th:errors="*{avatar}"></small></p>
+						-->
 
 						<label for="email" class="form-label">Email</label>
 						<input type="text" class="form-control" th:field="*{email}">
 						<p><small class="error" th:errors="*{email}"></small></p>
+
+						<label for="emailConf" class="form-label">Email(確認用)</label>
+						<input type="text" class="form-control" th:field="*{emailConf}">
+						<p><small class="error" th:errors="*{emailConf}"></small></p>
 
 						<label for="loginPass" class="form-label">パスワード</label>
 						<input type="password" class="form-control" th:field="*{loginPass}">
@@ -52,7 +57,7 @@
 	</main>
 	<div th:replace="~{parts/common :: block_script}"></div>
 	<script>
-		
+
 		//画像プレビュー
 		function previewFile() {
 
@@ -69,7 +74,7 @@
 				reader.readAsDataURL(file);
 			}
 		}
-		
+
 	</script>
 </body>
 
