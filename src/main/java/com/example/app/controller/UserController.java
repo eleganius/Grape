@@ -15,11 +15,26 @@ import com.example.app.domain.User;
 import com.example.app.service.ArticleService;
 import com.example.app.service.UserService;
 import com.example.app.validation.AddUserGroup;
-import com.example.app.validation.LoginGroup;
 
 @Controller
-@RequestMapping("/grape")
+@RequestMapping("/grape/users")
 public class UserController {
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	ArticleService articleService;
+
+	@GetMapping("/{id}")
+	public String show(
+			@PathVariable Integer id,
+			Model model) {
+		model.addAttribute("title", "ユーザー詳細");
+		model.addAttribute("user", userService.getUserByEmail(id));
+		model.addAttribute("articleList", articleService.getArticleList());
+		return "users/user";
+	}
 
 	@GetMapping("/addUser")
 	public String addUserGet(Model model) {
@@ -42,45 +57,6 @@ public class UserController {
 
 		return "redirect:/grape/articleList";
 
-	}
-
-	@GetMapping("/login") //TODO セッション保管
-	public String loginGet(Model model) {
-		model.addAttribute("title", "ログイン画面");
-		model.addAttribute("loginUser", new User());
-		return "login";
-	}
-
-	@PostMapping("/login")
-	public String loginPost(@Validated(LoginGroup.class) @ModelAttribute("loginUser") User loginUser,
-			Errors errors, Model model) {
-
-		if (errors.hasErrors()) {
-			return "login";
-		}
-
-		if(!loginUser.getEmail().equals("taro@example.com")
-				|| !loginUser.getLoginPass().equals("password1")) {
-			errors.reject("error.wrong_id_or_password");
-			return "login";
-		}
-
-		return "redirect:/grape/articleList";
-	}
-
-	@Autowired
-	private UserService service;
-	@Autowired
-	private ArticleService articleService;
-
-	@GetMapping("/user/{id}")
-	public String show(
-			@PathVariable Integer id,
-			Model model) {
-		model.addAttribute("title", "ユーザー詳細");
-		model.addAttribute("user", service.getUserById(id));
-		model.addAttribute("articleList", articleService.getArticleList());
-		return "users/user";
 	}
 
 }

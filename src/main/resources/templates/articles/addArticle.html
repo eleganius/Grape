@@ -28,16 +28,16 @@
 						<p><small class="error" th:errors="*{caption}"></small></p>
 
 						<div class="d-flex justify-content-between align-items-center">
-							<a th:href="@{/grape/articleList}" class="btn btn-link me-auto">
+							<a th:href="@{/grape/articles/articleList}" class="btn btn-link me-auto">
 								<i class="bi bi-skip-backward" style="font-size: 1.25rem; color: cornflowerblue;"></i>
 							</a>
 							<div class="form-check form-check-inline">
 								<label class="form-check-label" for="status1">公開</label>
-								<input class="form-check-input" type="radio" id="status1" name="status" value="1" checked>
+								<input class="form-check-input" type="radio" th:field="status" th:value="1">
 							</div>
 							<div class="form-check form-check-inline">
 								<label class="form-check-label" for="status2">非公開</label>
-								<input class="form-check-input" type="radio" id="status2" name="status" value="2">
+								<input class="form-check-input" type="radio" th:field="status" th:value="2">
 							</div>
 							<button class="btn btn-link ms-auto" type="submit">
 								<i class="bi bi-cloud-arrow-up" style="font-size: 1.25rem; color: cornflowerblue;"></i>

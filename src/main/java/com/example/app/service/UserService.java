@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import com.example.app.domain.User;
 
 @Service
-public class UserService {
+public interface UserService {
 
-	public User getUserById(int id) {
-		return null;
-	}
+	boolean isCollectEmailAndLoginPass(String email, String loginPass) throws Exception;
+
+	User getUserByEmail(String email) throws Exception;
 
 }

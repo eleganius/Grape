@@ -3,19 +3,19 @@
 		<div class="card shadow-sm">
 
 			<!-- 投稿画像 -->
-			<a th:href="@{/grape/article/{id}(id=${article.id})}">
-				<img th:src="@{/images/wines/{image}(image=${article.image})}"
-					class="img-thumbnail" style="padding: 0.75rem;">
+			<a th:href="@{/grape/articles/{id}(id=${article.id})}">
+				<img th:src="@{/images/wines/{image}(image=${article.image})}" class="img-thumbnail" style="padding: 0.75rem;">
 			</a>
 
 			<div class="card-body py-2">
 
 				<!-- 投稿者 -->
-				<a th:href="@{/grape/user/{id}(id=${article.user.id})}">
-					<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
-						class="rounded-circle">
+				<!--<a th:href="@{/grape/users/{id}(id=${article.user.id})}">-->
+				<a href="">
+					<!--<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32" class="rounded-circle">-->
+					<img th:src="@{/images/user_icon.png}" width="32" height="32" class="rounded-circle">
 					<small class="d-inline-block align-bottom text-black ps-1">
-						<strong>[[${article.user.name}]]</strong>
+						<strong>article.user.name</strong>
 					</small>
 				</a>
 
@@ -30,13 +30,13 @@
 						<!-- いいね -->
 						<small class="pe-1">
 							<i class="bi bi-suit-heart-fill iine" data-articleId=""></i>
-							<span id="likeCount">[[${article.like.likeCount}]]</span>
+							<span id="likeCount">article.like.likeCount</span>
 						</small>
 
 						<!-- コメント -->
 						<small id="dots" class="px-1">
 							<i class="bi bi-chat-dots text-muted"></i>
-							<span id="CommentCount">[[${article.comment.commentCount}]]</span>
+							<span id="CommentCount">article.comment.commentCount</span>
 						</small>
 
 					</span>

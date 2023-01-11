@@ -9,6 +9,6 @@ import com.example.app.domain.Article;
 @Service
 public interface ArticleService {
 
-	public List<Article> getArticleList(Integer id) throws Exception;
+	public List<Article> getArticleList() throws Exception;
 
 }

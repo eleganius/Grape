@@ -1,5 +1,6 @@
 package com.example.app.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,8 +9,10 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.example.app.filter.AuthFilter;
+
 @Configuration
-public class ValidationConfig implements WebMvcConfigurer {
+public class ApplicationConfig implements WebMvcConfigurer {
 
 	@Override
 	public Validator getValidator() {
@@ -23,5 +26,13 @@ public class ValidationConfig implements WebMvcConfigurer {
 		var messageSource = new ResourceBundleMessageSource();
 		messageSource.setBasename("validation");
 		return messageSource;
+	}
+
+	@Bean
+	public FilterRegistrationBean<AuthFilter> authFilter() {
+		var bean = new FilterRegistrationBean<AuthFilter>(new AuthFilter());
+		bean.addUrlPatterns("/grape/users/*");
+		bean.addUrlPatterns("/grape/articles/*");
+		return bean;
 	}
 }

@@ -13,7 +13,7 @@
 
 						<div class="d-flex align-items-center">
 							<!-- 投稿者 -->
-							<a th:href="@{/grape/user/{id}(id=${article.userId})}" class="me-auto">
+							<a th:href="@{/grape/users/{id}(id=${article.userId})}" class="me-auto">
 								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 									class="rounded-circle">
 								<small id="creator" class="d-inline-block align-bottom text-black ps-1">
@@ -66,7 +66,7 @@
 						<div class="d-flex align-items-center border-top border-light-subtle pt-2">
 							<small class="d-block">
 								<!-- コメントユーザー -->
-								<a th:href="@{/grape/user/{id}(id=${article.comment.user.id})}"
+								<a th:href="@{/grape/users/{id}(id=${article.comment.user.id})}"
 									class="d-inline-flex text-black align-middle">
 									<img th:src="@{/images/users/{avatar}(avatar=${article.comment.user.avatar})}" width="24" height="24"
 										class="rounded-circle">

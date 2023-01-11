@@ -6,7 +6,7 @@
 	console.log(url);//デバッグ用
 
 	//articleList以外検索フォーム非表示
-	if (url.pathname !== '/grape/articleList') {
+	if (url.pathname !== '/grape/articles/articleList') {
 
 		const search = document.getElementById('search');
 
