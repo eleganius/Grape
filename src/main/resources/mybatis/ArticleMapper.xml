@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.appdao.ArticleDao">
+
+	<select id="selectAll"
+		resultType="com.example.app.domain.Article">
+		SELECT *,
+		if(liked_article_ids.liked_article_id, 1, 0) AS done
+		FROM articles
+		<!-- 投稿したユーザー情報 -->
+		LEFT JOIN (SELECT id, name, avatar FROM users) AS users
+		ON articles.user_id = users.id
+		<!-- いいねされた数 -->
+		LEFT JOIN (SELECT article_id, COUNT(*) AS like_count FROM likes
+			GROUP BY article_id) AS likes
+		ON articles.id = likes.article_id
+		<!-- コメントされた数 -->
+		LEFT JOIN (SELECT article_id, COUNT(*) AS comment_count FROM comments
+			GROUP BY article_id) AS comments
+		ON articles.id = comments.article_id
+		<!-- ログインユーザーがいいねしてるかどうか -->
+		LEFT JOIN (SELECT article_id AS liked_article_id FROM likes
+			WHERE user_id = #{id}) AS liked_article_ids
+		ON articles.id = liked_article_ids.liked_article_id
+		<!-- 投稿公開中かどうか -->
+		WHERE status = 0
+		<!-- 投稿作成順 -->
+		ORDER BY articles.created_at DESC
+	</select>
+
+</mapper>

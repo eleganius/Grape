@@ -44,7 +44,7 @@ public class UserController {
 
 	}
 
-	@GetMapping("/login")
+	@GetMapping("/login") //TODO セッション保管
 	public String loginGet(Model model) {
 		model.addAttribute("title", "ログイン画面");
 		model.addAttribute("loginUser", new User());

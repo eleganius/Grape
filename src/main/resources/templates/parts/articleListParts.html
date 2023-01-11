@@ -1,9 +1,9 @@
 <div class="row row-cols-md-2 row-cols-lg-3" th:fragment="page_articleList">
-	<div class="col-md-6 col-lg-4 my-2 animate" th:each="article, status : ${articleList}">
+	<div class="col-md-6 col-lg-4 my-2 animate" th:each="article : ${articleList}">
 		<div class="card shadow-sm">
 
 			<!-- 投稿画像 -->
-			<a th:href="@{/grape/article/{id}(id=${status.index})}">
+			<a th:href="@{/grape/article/{id}(id=${article.id})}">
 				<img th:src="@{/images/wines/{image}(image=${article.image})}"
 					class="img-thumbnail" style="padding: 0.75rem;">
 			</a>
@@ -11,7 +11,7 @@
 			<div class="card-body py-2">
 
 				<!-- 投稿者 -->
-				<a th:href="@{/grape/user/{id}(id=${status.index})}">
+				<a th:href="@{/grape/user/{id}(id=${article.user.id})}">
 					<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 						class="rounded-circle">
 					<small class="d-inline-block align-bottom text-black ps-1">

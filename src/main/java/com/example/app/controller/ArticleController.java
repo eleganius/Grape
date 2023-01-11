@@ -25,9 +25,10 @@ public class ArticleController {
 	private ArticleService service;
 
 	@GetMapping("/articleList")
-	public String showAll(Model model) {
+	public String list(
+			Model model) throws Exception {
 		model.addAttribute("title", "トップ画面");
-		model.addAttribute("articleList", service.getArticleList());
+		model.addAttribute("articleList", service.getArticleList(id));
 		return "articles/articleList";
 	}
 

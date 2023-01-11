@@ -2,22 +2,10 @@ package com.example.app.domain;
 
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Comment {
-
-	public Comment(Integer id, String body, Date created, Integer commentCount, User user) {
-		this.id = id;
-		this.body = body;
-		this.created = created;
-		this.commentCount = commentCount;
-		this.user = user;
-	}
 
 	//DBフィールド
 	private Integer id;

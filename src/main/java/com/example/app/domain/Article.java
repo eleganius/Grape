@@ -6,26 +6,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Article {
-
-	public Article(Integer id, Integer userId, String image, String caption, Date created, User user, Like like,
-			Comment comment) {
-		this.id = id;
-		this.userId = userId;
-		this.image = image;
-		this.caption = caption;
-		this.created = created;
-		this.user = user;
-		this.like = like;
-		this.comment = comment;
-	}
 
 	//DBフィールド
 	private Integer id;
