@@ -11,4 +11,8 @@ public interface ArticleService {
 
 	public List<Article> getArticleList() throws Exception;
 
+	int getTotalPages(int numPerPage) throws Exception;
+
+	List<Article> getArticleListByPage(int page, int numPerPage) throws Exception;
+
 }

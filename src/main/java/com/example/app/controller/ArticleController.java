@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.app.domain.Article;
 import com.example.app.service.ArticleService;
@@ -22,18 +23,20 @@ import com.example.app.service.ArticleService;
 @RequestMapping("/grape/articles")
 public class ArticleController {
 
+	private static final int NUM_PER_PAGE = 5;
+
 	@Autowired
 	private ArticleService service;
 
 	@GetMapping("/articleList")
 	public String list(
+			@RequestParam(name = "page", defaultValue = "1") Integer page,
 			HttpSession session,
 			Model model) throws Exception {
 		model.addAttribute("title", "トップ画面");
-		List<Article> articleList = service.getArticleList();
-		System.out.println(articleList);
-		model.addAttribute("articleList", articleList);
-		//session.getAttribute("loginUser");
+		model.addAttribute("articleList", service.getArticleListByPage(page, NUM_PER_PAGE));
+		model.addAttribute("page", page);
+		model.addAttribute("totalPages", service.getTotalPages(NUM_PER_PAGE));
 		return "articles/articleList";
 	}
 

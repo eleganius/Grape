@@ -8,26 +8,41 @@
 		resultType="com.example.app.domain.Article">
 		SELECT *,
 		if(liked_article_ids.liked_article_id, 1, 0) AS done
-		FROM articles
+		FROM
+		articles
 		<!-- 投稿したユーザー情報 -->
 		LEFT JOIN (SELECT id, name, avatar FROM users) AS users
-		ON articles.user_id = users.id
+		ON
+		articles.user_id = users.id
 		<!-- いいねされた数 -->
 		LEFT JOIN (SELECT article_id, COUNT(*) AS like_count FROM likes
-			GROUP BY article_id) AS likes
+		GROUP BY article_id) AS likes
 		ON articles.id = likes.article_id
 		<!-- コメントされた数 -->
 		LEFT JOIN (SELECT article_id, COUNT(*) AS comment_count FROM comments
-			GROUP BY article_id) AS comments
+		GROUP BY article_id) AS comments
 		ON articles.id = comments.article_id
 		<!-- ログインユーザーがいいねしてるかどうか -->
 		LEFT JOIN (SELECT article_id AS liked_article_id FROM likes
-			WHERE user_id = #{id}) AS liked_article_ids
+		WHERE user_id = #{id}) AS liked_article_ids
 		ON articles.id = liked_article_ids.liked_article_id
 		<!-- 投稿公開中かどうか -->
 		WHERE status = 0
 		<!-- 投稿作成順 -->
 		ORDER BY articles.created DESC
+	</select>
+
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM articles
+	</select>
+	<select id="selectLimited"
+		resultType="com.example.app.domain.Article">
+		SELECT
+		*
+		FROM articles
+		WHERE status = 0
+		ORDER BY articles.created DESC
+		LIMIT #{offset}, #{num}
 	</select>
 
 </mapper>

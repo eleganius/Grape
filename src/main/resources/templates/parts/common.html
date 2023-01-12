@@ -52,6 +52,41 @@
 		</div>
 	</header>
 
+	<footer th:fragment="page_footer">
+		<th:block th:if="${totalPages >= 2}">
+			<ul class="pagination justify-content-center">
+				<th:block th:switch="${page}">
+					<li th:case="1" class="page-item disabled">
+						<a class="page-link" href="">&laquo;</a>
+					</li>
+					<li th:case="*" class="page-item">
+						<a class="page-link" th:href="@{/grape/articles/articleList(page=${page - 1})}">&laquo;</a>
+					</li>
+				</th:block>
+
+				<th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
+					<th:block th:switch="${index}">
+						<li th:case="${page}" class="page-item active">
+							<a class="page-link" href="">[[${index}]]</a>
+						</li>
+						<li th:case="*" class="page-item">
+							<a class="page-link" th:href="@{/grape/articles/articleList(page=${index})}">[[${index}]]</a>
+						</li>
+					</th:block>
+				</th:block>
+
+				<th:block th:switch="${page}">
+					<li th:case="${totalPages}" class="page-item disabled">
+						<a class="page-link" href="">&raquo;</a>
+					</li>
+					<li th:case="*" class="page-item">
+						<a class="page-link" th:href="@{/grape/articles/articleList(page=${page + 1})}">&raquo;</a>
+					</li>
+				</th:block>
+			</ul>
+		</th:block>
+	</footer>
+
 	<th:block th:fragment="block_script">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"

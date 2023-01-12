@@ -21,4 +21,16 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleDao.selectAll();
 	}
 
+	@Override
+	public int getTotalPages(int numPerPage) throws Exception {
+		double totalNum = (double) articleDao.count();
+		return (int) Math.ceil(totalNum / numPerPage);
+	}
+
+	@Override
+	public List<Article> getArticleListByPage(int page, int numPerPage) throws Exception {
+		int offset = numPerPage * (page - 1);
+		return articleDao.selectLimited(offset, numPerPage);
+	}
+
 }
