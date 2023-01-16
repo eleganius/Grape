@@ -1,7 +1,5 @@
 package com.example.app.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -9,69 +7,122 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.app.domain.Article;
+import com.example.app.login.LoginStatus;
 import com.example.app.service.ArticleService;
 
 @Controller
-@RequestMapping("/grape/articles")
+@RequestMapping("/article")
 public class ArticleController {
 
-	private static final int NUM_PER_PAGE = 5;
+	private static final int NUM_PER_PAGE = 9;
 
 	@Autowired
-	private ArticleService service;
+	ArticleService service;
 
-	@GetMapping("/articleList")
+	@GetMapping("/list")
 	public String list(
-			@RequestParam(name = "page", defaultValue = "1") Integer page,
 			HttpSession session,
+			@RequestParam(name = "page", defaultValue = "1") Integer page,
 			Model model) throws Exception {
-		model.addAttribute("title", "トップ画面");
-		model.addAttribute("articleList", service.getArticleListByPage(page, NUM_PER_PAGE));
-		model.addAttribute("page", page);
-		model.addAttribute("totalPages", service.getTotalPages(NUM_PER_PAGE));
-		return "articles/articleList";
+
+		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
+
+		int totalPages = service.getTotalPages(NUM_PER_PAGE);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("articleList",
+				service.getArticleListByPage(page, NUM_PER_PAGE, loginStatus.getId()));
+		return "list-article";
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/show/{id}")
 	public String show(
 			@PathVariable Integer id,
-			Model model) {
-		model.addAttribute("title", "投稿詳細");
-		Article article = service.getArticleById(id);
+			Model model) throws Exception {
+		System.out.println(service.getArticleById(id));
+		model.addAttribute("article", service.getArticleById(id));
+		return "show-article";
+	}
+
+	@GetMapping("/add")
+	public String addArticleGet(Model model) throws Exception {
+		//radioボタン初期値セット
+		Article article = new Article();
+		article.setStatus("PUB");
 		model.addAttribute("article", article);
-		return "articles/article";
+		return "add-article";
 	}
 
-	@GetMapping("/addArticle")
-	public String addArticleGet(Model model) {
-		model.addAttribute("title", "投稿作成画面");
-		model.addAttribute("article", new Article());
-		return "articles/addArticle";
-	}
+	@PostMapping("/add")
+	public String addArticlePost(
+			HttpSession session,
+			@RequestParam("upfile") MultipartFile upfile,
+			@Valid Article article,
+			Errors errors,
+			Model model,
+			RedirectAttributes redirectAttributes) throws Exception {
 
-	@PostMapping("/addArticle")
-	public String addArticlePost(@Valid Article article,
-			Errors errors, Model model) {
+		//投稿者＝ログインユーザー※input type=hiddenでも可
+		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
+		article.setUserId(loginStatus.getId());
 
-		//バリデーション
-		if (errors.hasErrors()) {
-			// エラー内容の確認
-			List<ObjectError> objList = errors.getAllErrors();
-			for (ObjectError obj : objList) {
-				System.out.println(obj.toString());
+		if (!upfile.isEmpty()) {
+			String type = upfile.getContentType();
+			if (!type.startsWith("image/")) {
+				errors.rejectValue("upfile", "error.not_image_file");
 			}
-			return "articles/addArticle";
 		}
 
-		return "redirect:/grape/articleList";
+		if (errors.hasErrors()) {
+			return "add-article";
+		}
+
+		service.addArticle(article, upfile);
+		redirectAttributes.addFlashAttribute("message", "投稿を追加しました。");
+		return "redirect:/article/list";
+	}
+
+	@GetMapping("/edit/{id}")
+	public String edit(
+			@PathVariable Integer id,
+			Model model) throws Exception {
+		model.addAttribute("article", service.getArticleById(id));
+		return "edit-article";
+	}
+
+	@PostMapping("/edit/{id}")
+	public String edit(
+			@PathVariable Integer id,
+			@Valid Article article,
+			Errors errors,
+			Model model,
+			RedirectAttributes redirectAttributes) throws Exception {
+
+		if (errors.hasErrors()) {
+			return "edit-article";
+		}
+
+		service.editArticle(article);
+		redirectAttributes.addFlashAttribute("message", "投稿を編集しました。");
+		return "redirect:/article/list";
+	}
+
+	@GetMapping("/delete/{id}")
+	public String delete(
+			@PathVariable Integer id,
+			RedirectAttributes redirectAttributes) throws Exception {
+		service.deleteArticleById(id);
+		redirectAttributes.addFlashAttribute("message", "投稿を削除しました。");
+		return "redirect:/article/list";
 	}
 
 }

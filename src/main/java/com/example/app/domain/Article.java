@@ -1,6 +1,7 @@
 package com.example.app.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,13 +20,15 @@ public class Article {
 	@Size(max = 100)
 	private String caption;
 
-	private Date created;
-	private Date updated;
-	private Integer status;
+	private Date createdAt;
+	private Date updatedAt;
+	private String status;
 
-	//例外フィールド
+	//JOINフィールド
 	private User user;
-	private Like like;
-	private Comment comment;
+	private int likeCount;
+	private boolean likeIsDone;
+	private int commentCount;
+	private List<Comment> comment;
 
 }

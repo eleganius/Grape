@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{parts/common :: html_head()}"></head>
+
+<body class="bg-light">
+	<header th:replace="~{parts/common :: header()}"></header>
+	<div class="hero">
+		<img th:src="@{/images/covers/cover1.jpg}" class="current">
+		<img th:src="@{/images/covers/cover2.jpg}">
+		<img th:src="@{/images/covers/cover3.jpg}">
+		<img th:src="@{/images/covers/cover4.jpg}">
+		<img th:src="@{/images/covers/cover5.jpg}">
+	</div>
+	<main class="album">
+		<div class="container">
+
+			<div class="alert alert-success my-2" th:if="${message}">
+				[[${message}]]
+			</div>
+
+			<div th:replace="~{parts/articleListParts :: articleList()}"></div>
+		</div>
+	</main>
+	<div th:replace="~{parts/common :: pagination(${totalPages}, ${currentPage}, 'article/list')}"></div>
+	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
+	<script th:src="@{/js/iine.js}"></script>
+	<script th:src="@{/js/huwatto.js}"></script>
+	<script>
+		$(document).ready(function () {
+
+			//heroスライドショー
+			function play() {
+				setTimeout(() => {
+					images[currentIndex].classList.remove('current');
+					currentIndex++;
+					if (currentIndex > images.length - 1) {
+						currentIndex = 0;
+					}
+					images[currentIndex].classList.add('current');
+					play();
+				}, 2000);
+			}
+			const images = document.querySelectorAll('.hero img');
+			let currentIndex = 1;
+			play();
+
+		});
+
+	</script>
+	<script>
+		$(document).ready(function () {
+
+			let $iines = $('.iine'); //$iineの$はjQueryオブジェクトであることを明示的に表示（jQueryメソッドが使える）
+
+			for (let i = 0; i < $iines.length; i++) {
+				$iines[i].addEventListener('click', function () {
+					//デバッグ用
+					console.log($(this));
+					console.log($(this).data());
+					console.log($(this).data().articleid);
+					console.log($(this).attr('id'));
+
+					//addLikeなのかdeleteLikeなのかswitchで分岐
+					switch ($(this).attr('id')) {
+
+						case "yet":
+							$.ajax({
+								url: 'http://localhost:8888/like/add',
+								type: 'GET',
+								data: {articleId: $(this).data().articleid}, //カスタムデータ属性
+								dataType: 'JSON',
+								context: this, //.doneブロックでも$(this)が使える
+							})
+								.done(function (res) {
+
+									console.log(res); //デバッグ用
+
+									//ハートid属性変更
+									$(this).attr('id', 'done');
+
+									//いいね数を最新数に書き換え
+									$(this).next()
+										.empty()
+										.append(res);
+
+								})
+								.fail(function () {
+									alert('insert失敗');
+								});
+							break;
+
+						case "done":
+							$.ajax({
+								url: 'http://localhost:8888/like/delete',
+								type: 'GET',
+								data: {articleId: $(this).data().articleid},
+								dataType: 'JSON',
+								context: this,
+							})
+								.done(function (res) {
+
+									console.log(res);
+
+									//ハートid属性変更
+									$(this).attr('id', 'yet');
+
+									//いいね数を最新数に書き換え
+									$(this).next()
+										.empty()
+										.append(res);
+
+								})
+								.fail(function () {
+									alert('delete失敗');
+								});
+							break;
+					}
+
+				});
+			}
+
+		});
+	</script>
+</body>
+
+</html>

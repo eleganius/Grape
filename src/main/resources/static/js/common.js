@@ -6,20 +6,11 @@
 	console.log(url);//デバッグ用
 
 	//articleList以外検索フォーム非表示
-	if (url.pathname !== '/grape/articles/articleList') {
+	if (url.pathname !== '/article/list') {
 
 		const search = document.getElementById('search');
 
 		search.remove();
-
-	}
-
-	//loginまたはaddUserではheader-links非表示
-	if (url.pathname === '/grape/login') {
-
-		const headerLinks = document.getElementById('header-links');
-
-		headerLinks.remove();
 
 	}
 

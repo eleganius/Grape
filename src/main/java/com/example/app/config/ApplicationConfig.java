@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.app.filter.AuthFilter;
+import com.example.app.login.AdminAuthFilter;
+import com.example.app.login.UserAuthFilter;
 
 @Configuration
 public class ApplicationConfig implements WebMvcConfigurer {
@@ -29,10 +31,23 @@ public class ApplicationConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public FilterRegistrationBean<AuthFilter> authFilter() {
-		var bean = new FilterRegistrationBean<AuthFilter>(new AuthFilter());
-		bean.addUrlPatterns("/grape/users/*");
-		bean.addUrlPatterns("/grape/articles/*");
+	public FilterRegistrationBean<AdminAuthFilter> adminAuthFilter() {
+		var bean = new FilterRegistrationBean<AdminAuthFilter>(new AdminAuthFilter());
+		bean.addUrlPatterns("/admin/user/list");
 		return bean;
 	}
+
+	@Bean
+	public FilterRegistrationBean<UserAuthFilter> studentAuthFilter() {
+		var bean = new FilterRegistrationBean<UserAuthFilter>(new UserAuthFilter());
+		bean.addUrlPatterns("/user/article/*");
+		bean.addUrlPatterns("/user/user/*");
+		return bean;
+	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/uploads/**").addResourceLocations("file:uploads/");
+	}
+
 }

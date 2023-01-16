@@ -11,10 +11,6 @@ public class Like {
 	private Integer id;
 	private Integer user_id;
 	private Integer article_id;
-	private Date created;
-
-	//例外フィールド
-	private Integer likeCount;
-	private Boolean done;
+	private Date createdAt;
 
 }

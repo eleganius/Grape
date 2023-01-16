@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{parts/common :: html_head}"></head>
+<head th:replace="~{parts/common :: html_head()}"></head>
 
 <body>
-	<header th:replace="~{parts/common :: page_header}"></header>
+	<header th:replace="~{parts/common :: header()}"></header>
 	<main>
 		<div class="container">
 
 			<div class="d-flex justify-content-end align-items-center my-3">
-				<a href="" class="align-baseline me-2">
+				<a th:href="@{/user/edit/{id}(id=${user.id})}" class="align-baseline me-2">
 					<i class="bi bi-person-up me-1"></i>
 					更新
 				</a>
-				<a href="" id="deleteUser" class="text-danger align-baseline">
+				<a th:href="@{/user/delete/{id}(id=${user.id})}" id="deleteUser" class="text-danger align-baseline">
 					<i class="bi bi-person-down me-1"></i>
 					退会
 				</a>
@@ -25,7 +25,7 @@
 
 						<div class="d-grid gap-3 px-2">
 							<!-- ユーザーアイコン -->
-							<img th:src="@{/images/users/{avatar}(avatar=${user.avatar})}" width="125px" height="125px"
+							<img th:src="@{/uploads/{avatar}(avatar=${user.avatar})}" width="125px" height="125px"
 								style="border-radius: 50%; object-fit: cover;">
 
 							<!-- フォローボタン -->
@@ -43,14 +43,14 @@
 								<button id="follower" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
 									data-bs-toggle="modal" data-bs-target="#exampleModal">
 									<span style="bottom: 2px; position: relative;">
-										[[${user.follow.followeeCount}]]
+										100
 									</span>
 								</button>
 								フォロー中
 								<button id="following" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
 									data-bs-toggle="modal" data-bs-target="#exampleModal">
 									<span style="bottom: 2px; position: relative;">
-										[[${user.follow.followerCount}]]
+										100
 									</span>
 								</button>
 							</div>
@@ -65,30 +65,40 @@
 			</div>
 			<hr class="m-0">
 
-			<div class="d-flex justify-content-evenly my-2">
-				<a href="" class="text-muted">
+			<div th:if="${session.loginStatus.id == user.id}" class="d-flex justify-content-evenly my-2">
+				<a th:href="@{/user/show/{id}(id=${user.id}, status=PUB)}" class="text-muted">
 					<i class="bi bi-grid-3x3-gap-fill"></i>
 					<small>[[${user.name}]]さんの投稿</small>
 				</a>
-				<a href="" class="text-muted">
+				<a th:href="@{/user/show/{id}(id=${user.id}, status=PRI)}" class="text-muted">
 					<i class="bi bi-grid-3x3-gap"></i>
 					<small>非公開・下書き投稿</small>
 				</a>
-				<a href="" class="text-muted">
+				<a th:href="@{/user/show/{id}(id=${user.id}, status=LIKED)}" class="text-muted">
 					<i class="bi bi-bookmark-heart"></i>
 					<small>いいねした投稿</small>
 				</a>
 			</div>
 
-			<div th:replace="~{parts/articleListParts :: page_articleList}"></div>
+			<div th:replace="~{parts/articleListParts :: articleList()}"></div>
 
 		</div>
 	</main>
-	<div th:replace="~{parts/common :: block_script}"></div>
+	<div th:replace="~{parts/common :: pagination( ${totalPages}, ${currentPage}, 'user/show/1' )}"></div>
+	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script th:src="@{/js/huwatto.js}"></script>
 	<script>
 		$(document).ready(function () {
+
+			//退会アラート
+			const deleteUser = document.getElementById('deleteUser');
+			deleteUser.addEventListener('click', e => {
+				const result = confirm("本当に退会しますか？");
+				if (!result) {
+					e.preventDefault();
+				}
+			});
 
 			//フォローボタントグル
 			$('#deleteFollowBtn').hide();

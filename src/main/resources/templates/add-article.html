@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{parts/common :: html_head()}"></head>
+
+<body>
+	<header th:replace="~{parts/common :: header()}"></header>
+	<main>
+		<div class="container">
+			<div class="row pt-3 justify-content-center">
+				<div class="col-8 col-sm-8 col-md-6 col-lg-4">
+					<h3 class="mb-3 text-center">投稿作成画面</h3>
+					<form action="" method="post" th:object="${article}" enctype="multipart/form-data">
+
+						<label for="image" class="form-label d-block">
+							<div>
+								<img th:src="@{/images/wine0.jpg}" id="prevImage" class="w-100">
+							</div>
+						</label>
+						<input class="form-control form-control-sm" type="file"
+						name="upfile" id="image" onchange="previewFile()">
+						<p></p>
+
+						<label for="caption" class="form-label">キャプション</label>
+						<textarea class="form-control" rows="4" th:field="*{caption}"
+							placeholder="人気の高級ワイン。カシスやブルーベリー、レーズンやバナナにチョコレート、ハーブ、大輪のバラのような心地よい酸味と甘みがあり、上品な凝縮感があります。">
+						</textarea>
+						<p><small class="error" th:errors="*{caption}"></small></p>
+
+						<div class="d-flex justify-content-between align-items-center">
+							<a th:href="@{/article/list}" class="btn btn-link me-auto">
+								<i class="bi bi-skip-backward" style="font-size: 1.25rem; color: cornflowerblue;"></i>
+							</a>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label" for="status1">公開</label>
+								<input class="form-check-input" type="radio" th:field="*{status}" th:value="PUB">
+							</div>
+							<div class="form-check form-check-inline">
+								<label class="form-check-label" for="status2">非公開</label>
+								<input class="form-check-input" type="radio" th:field="*{status}" th:value="PRI">
+							</div>
+							<button class="btn btn-link ms-auto" type="submit">
+								<i class="bi bi-cloud-arrow-up" style="font-size: 1.25rem; color: cornflowerblue;"></i>
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
+	<script>
+
+		//画像バリデーション＆プレビュー
+		function previewFile() {
+
+			const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+			const file = document.querySelector('input[type=file]').files[0];
+			const preview = document.getElementById('prevImage');
+			const reader = new FileReader();
+
+			reader.addEventListener("load", () => {
+				if (file != undefined && file.size >= MAX_FILE_SIZE) {
+					load.preventDefault();
+					// エラーメッセージを含む small 要素を生成
+					const errorMessage = $('<small>');
+					errorMessage.addClass('error');
+					errorMessage.text('ファイルサイズが大き過ぎます');
+					// エラーメッセージを出力
+					$('input[type=file]').children().after(errorMessage);
+				}
+
+				// 画像ファイルを base64 文字列に変換
+				preview.src = reader.result;
+			}, false);
+
+			if (file) {
+				reader.readAsDataURL(file);
+			}
+
+		}
+	</script>
+</body>
+
+</html>

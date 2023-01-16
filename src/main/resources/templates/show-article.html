@@ -1,47 +1,47 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{parts/common :: html_head}"></head>
+<head th:replace="~{parts/common :: html_head()}"></head>
 
 <body>
-	<header th:replace="~{parts/common :: page_header}"></header>
+	<header th:replace="~{parts/common :: header()}"></header>
 	<main class="album">
 		<div class="container">
 			<div class="row justify-content-center my-2">
-				<div class="col-10 col-sm-8 col-md-6">
+				<div class="col-8 col-sm-8 col-md-6 col-lg-4">
 					<div class="card p-2">
 
 						<div class="d-flex align-items-center">
 							<!-- 投稿者 -->
-							<a th:href="@{/grape/users/{id}(id=${article.userId})}" class="me-auto">
-								<img th:src="@{/images/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
+							<a th:href="@{/user/show/{id}(id=${article.user.id})}" class="me-auto">
+								<img th:src="@{/uploads/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 									class="rounded-circle">
 								<small id="creator" class="d-inline-block align-bottom text-black ps-1">
 									<strong>[[${article.user.name}]]</strong>
 								</small>
 							</a>
 							<!-- 編集・削除 -->
-							<a href="" class="align-baseline me-2">
+							<a th:href="@{/article/edit/{id}(id=${article.id})}" class="align-baseline me-2">
 								<i class="bi bi-pen me-1"></i>
 							</a>
-							<a href="" id="deleteArticle" class="text-danger align-baseline">
+							<a th:href="@{/article/delete/{id}(id=${article.id})}" id="deleteArticle" class="text-danger align-baseline">
 								<i class="bi bi-trash3 me-1"></i>
 							</a>
 						</div>
 						<!-- 投稿画像 -->
-						<img th:src="@{/images/wines/{image}(image=${article.image})}" class="rounded mt-2">
+						<img th:src="@{/uploads/{image}(image=${article.image})}" class="rounded mt-2">
 
 						<div class="d-flex justify-content-between pt-2">
 							<span class="d-flex">
 								<!-- いいね -->
 								<small class="pe-1">
 									<i class="bi bi-suit-heart-fill iine" data-articleId=""></i>
-									<span id="likeCount">[[${article.like.likeCount}]]</span>
+									<span id="likeCount">100</span>
 								</small>
 								<!-- コメント -->
 								<small class="px-1">
 									<i class="bi bi-chat-dots text-muted"></i>
-									<span id="CommentCount">[[${article.comment.commentCount}]]</span>
+									<span id="CommentCount">100</span>
 								</small>
 								<!-- offcanvas -->
 								<small>
@@ -54,7 +54,7 @@
 							</span>
 							<!-- 投稿日時 -->
 							<small class="text-muted created">
-								[[${#dates.format(article.created, 'yy-MM-dd HH:mm')}]]
+								[[${#dates.format(article.createdAt, 'yy-MM-dd HH:mm')}]]
 							</small>
 						</div>
 
@@ -66,16 +66,20 @@
 						<div class="d-flex align-items-center border-top border-light-subtle pt-2">
 							<small class="d-block">
 								<!-- コメントユーザー -->
-								<a th:href="@{/grape/users/{id}(id=${article.comment.user.id})}"
+<!--								<a th:href="@{/user/show/{id}(id=${article.comment.user.id})}"-->
+<!--									class="d-inline-flex text-black align-middle">-->
+								<a href=""
 									class="d-inline-flex text-black align-middle">
-									<img th:src="@{/images/users/{avatar}(avatar=${article.comment.user.avatar})}" width="24" height="24"
+<!--									<img th:src="@{/uploads/users/{avatar}(avatar=${article.comment.user.avatar})}" width="24" height="24"-->
+<!--										class="rounded-circle">-->
+									<img th:src="@{/images/user_icon.png}" width="24" height="24"
 										class="rounded-circle">
 									<strong class="px-1">
-										[[${article.comment.user.name}]]
+										article.comment.user.name
 									</strong>
 								</a>
 								<!-- コメント内容 -->
-								[[${article.comment.body}]]
+								article.comment.body
 							</small>
 							<!-- コメント削除 -->
 							<a href="" class="d-block ms-auto">
@@ -85,7 +89,7 @@
 
 						<!-- コメント日時 -->
 						<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
-							[[${#dates.format(article.comment.created, 'yy-MM-dd HH:mm')}]]
+							article.comment.created
 						</small>
 
 						<!-- コメントフォーム -->
@@ -107,7 +111,7 @@
 			</div>
 		</div>
 	</main>
-	<div th:replace="~{parts/common :: block_script}"></div>
+	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
 		$(document).ready(function () {

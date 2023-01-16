@@ -12,10 +12,9 @@ public class Comment {
 	private Integer userId;
 	private Integer articleId;
 	private String body;
-	private Date created;
+	private Date createdAt;
 
-	//例外フィールド
-	private Integer commentCount;
+	//JOINフィールド
 	private User user;
 
 }

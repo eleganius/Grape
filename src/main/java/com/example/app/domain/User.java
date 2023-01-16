@@ -4,9 +4,11 @@ import java.util.Date;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.app.validation.AddUserGroup;
 import com.example.app.validation.LoginGroup;
@@ -20,6 +22,13 @@ public class User {
 	private Integer id;
 	private String avatar;
 
+	@NotBlank(groups = { AddUserGroup.class })
+	private String name;
+
+	@NotNull(groups = { AddUserGroup.class })
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date birthday;
+
 	@NotBlank(groups = { AddUserGroup.class, LoginGroup.class })
 	@Email(groups = { AddUserGroup.class })
 	private String email;
@@ -31,16 +40,14 @@ public class User {
 	@Length(min = 8, max = 64, groups = { AddUserGroup.class })
 	private String loginPass;
 
-	@NotBlank(groups = { AddUserGroup.class })
-	private String name;
-
-	@Size(max = 100, groups = { AddUserGroup.class })
+	@Size(max = 140, groups = { AddUserGroup.class })
 	private String introduction;
 
-	private Date created;
-	private Date updated;
+	private Date createdAt;
+	private Date updatedAt;
+	private String status;
 
-	//例外フィールド
+	//JOINフィールド
 	private Follow follow;
 
 }

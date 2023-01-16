@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="html_head">
+<head th:fragment="html_head()">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" th:href="@{/images/favicon.png}" width="16" height="16">
@@ -9,18 +9,18 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
 		integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/css/style.css}" />
-	<title>[[${title}]]</title>
+	<title>Grape</title>
 </head>
 
 <body>
 
-	<header th:fragment="page_header">
+	<header th:fragment="header()">
 		<div class="container-fluid" style="height: 56px;">
 			<div class="navbar navbar-dark bg-dark shadow-sm fixed-top">
 				<div class="container">
 
 					<!-- articleListへのリンク -->
-					<a th:href="@{/grape/articles/articleList}" class="navbar-brand d-flex align-items-center">
+					<a th:href="@{/article/list}" class="navbar-brand d-flex align-items-center">
 						<img th:src="@{/images/favicon.png}" width="32" height="32" class="me-2">
 						<strong>Grape</strong>
 					</a>
@@ -33,16 +33,15 @@
 						</button>
 					</form>
 
-					<!-- login以降表示 -->
-					<div class="d-flex" id="header-links">
-						<a th:href="@{/grape/articles/addArticle}" class="text-white px-2">
+					<!-- header-links -->
+					<div th:if="${session.loginStatus}" class="d-flex" id="header-links">
+						<a th:href="@{/article/add}" class="text-white px-2">
 							<i class="bi bi-file-earmark-plus" style="font-size: 1.5rem;"></i>
 						</a>
-						<a th:if="${session.loginUser}" th:href="@{/grape/users/{id}(id=${session.loginUser.id})}"
-							class="text-white">
+						<a th:href="@{/user/show/{id}(id=${session.loginStatus.id})}" class="text-white">
 							<i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
 						</a>
-						<a th:href="@{/grape/login}" class="text-white" id="logout">
+						<a th:href="@{/user/logout}" class="text-white" id="logout">
 							<i class="bi bi-box-arrow-right text-white px-2" style="font-size: 1.5rem;"></i>
 						</a>
 					</div>
@@ -52,42 +51,43 @@
 		</div>
 	</header>
 
-	<footer th:fragment="page_footer">
-		<th:block th:if="${totalPages >= 2}">
-			<ul class="pagination justify-content-center">
-				<th:block th:switch="${page}">
-					<li th:case="1" class="page-item disabled">
-						<a class="page-link" href="">&laquo;</a>
+	<th:block th:fragment="pagination(totalPages, page, baseUrl)" th:if="${totalPages >= 2}">
+		<ul class="pagination justify-content-center">
+			<!-- 前のページへ -->
+			<th:block th:switch="${page}">
+				<li th:case="1" class="page-item disabled">
+					<a class="page-link" href="">&laquo;</a>
+				</li>
+				<li th:case="*" class="page-item">
+					<a class="page-link" th:href="@{/{baseUrl}(baseUrl=${baseUrl}, page=${page - 1})}">&laquo;</a>
+				</li>
+			</th:block>
+
+			<!-- ページ番号 -->
+			<th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
+				<th:block th:switch="${index}">
+					<li th:case="${page}" class="page-item active">
+						<a class="page-link" href="">[[${index}]]</a>
 					</li>
 					<li th:case="*" class="page-item">
-						<a class="page-link" th:href="@{/grape/articles/articleList(page=${page - 1})}">&laquo;</a>
+						<a class="page-link" th:href="@{/{baseUrl}(baseUrl=${baseUrl}, page=${index})}">[[${index}]]</a>
 					</li>
 				</th:block>
+			</th:block>
 
-				<th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
-					<th:block th:switch="${index}">
-						<li th:case="${page}" class="page-item active">
-							<a class="page-link" href="">[[${index}]]</a>
-						</li>
-						<li th:case="*" class="page-item">
-							<a class="page-link" th:href="@{/grape/articles/articleList(page=${index})}">[[${index}]]</a>
-						</li>
-					</th:block>
-				</th:block>
+			<!-- 次のページへ -->
+			<th:block th:switch="${page}">
+				<li th:case="${totalPages}" class="page-item disabled">
+					<a class="page-link" href="">&raquo;</a>
+				</li>
+				<li th:case="*" class="page-item">
+					<a class="page-link" th:href="@{/{baseUrl}(baseUrl=${baseUrl}, page=${page + 1})}">&raquo;</a>
+				</li>
+			</th:block>
+		</ul>
+	</th:block>
 
-				<th:block th:switch="${page}">
-					<li th:case="${totalPages}" class="page-item disabled">
-						<a class="page-link" href="">&raquo;</a>
-					</li>
-					<li th:case="*" class="page-item">
-						<a class="page-link" th:href="@{/grape/articles/articleList(page=${page + 1})}">&raquo;</a>
-					</li>
-				</th:block>
-			</ul>
-		</th:block>
-	</footer>
-
-	<th:block th:fragment="block_script">
+	<th:block th:fragment="javascripts()">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
 			integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
