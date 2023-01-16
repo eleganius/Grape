@@ -12,37 +12,49 @@
 					<div class="card p-2">
 
 						<div class="d-flex align-items-center">
+
 							<!-- 投稿者 -->
 							<a th:href="@{/user/show/{id}(id=${article.user.id})}" class="me-auto">
-								<img th:src="@{/uploads/users/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
+								<img th:src="@{/uploads/{avatar}(avatar=${article.user.avatar})}" width="32" height="32"
 									class="rounded-circle">
 								<small id="creator" class="d-inline-block align-bottom text-black ps-1">
 									<strong>[[${article.user.name}]]</strong>
 								</small>
 							</a>
+
 							<!-- 編集・削除 -->
-							<a th:href="@{/article/edit/{id}(id=${article.id})}" class="align-baseline me-2">
-								<i class="bi bi-pen me-1"></i>
-							</a>
-							<a th:href="@{/article/delete/{id}(id=${article.id})}" id="deleteArticle" class="text-danger align-baseline">
-								<i class="bi bi-trash3 me-1"></i>
-							</a>
+							<th:block th:if="${session.loginStatus.id == article.user.id}">
+								<a th:href="@{/article/edit/{id}(id=${article.id})}" class="align-baseline me-2">
+									<i class="bi bi-pen me-1"></i>
+								</a>
+								<a th:href="@{/article/delete/{id}(id=${article.id})}" id="deleteArticle"
+									class="text-danger align-baseline">
+									<i class="bi bi-trash3 me-1"></i>
+								</a>
+							</th:block>
 						</div>
+
 						<!-- 投稿画像 -->
 						<img th:src="@{/uploads/{image}(image=${article.image})}" class="rounded mt-2">
 
 						<div class="d-flex justify-content-between pt-2">
 							<span class="d-flex">
+
 								<!-- いいね -->
 								<small class="pe-1">
-									<i class="bi bi-suit-heart-fill iine" data-articleId=""></i>
-									<span id="likeCount">100</span>
+									<i th:if="${article.likeIsDone}" class="bi bi-suit-heart-fill iine" id="done"
+										th:data-articleId="${article.id}"></i>
+									<i th:unless="${article.likeIsDone}" class="bi bi-suit-heart iine" id="yet"
+										th:data-articleId="${article.id}"></i>
+									<span id="likeCount">[[${article.likeCount}]]</span>
 								</small>
+
 								<!-- コメント -->
 								<small class="px-1">
 									<i class="bi bi-chat-dots text-muted"></i>
-									<span id="CommentCount">100</span>
+									<span id="CommentCount">[[${article.commentCount}]]</span>
 								</small>
+
 								<!-- offcanvas -->
 								<small>
 									<button class="btn btn-sm btn-link px-1 pb-0" type="button" data-bs-toggle="offcanvas"
@@ -51,60 +63,68 @@
 									</button>
 									<!-- import parts.offcanvas -->
 								</small>
+
 							</span>
+
 							<!-- 投稿日時 -->
 							<small class="text-muted created">
 								[[${#dates.format(article.createdAt, 'yy-MM-dd HH:mm')}]]
 							</small>
+
 						</div>
 
 						<!-- 投稿内容 -->
-						<div class="border-top border-light-subtle p-1">
+						<div class="pb-2">
 							[[${article.caption}]]
 						</div>
 
-						<div class="d-flex align-items-center border-top border-light-subtle pt-2">
-							<small class="d-block">
-								<!-- コメントユーザー -->
-<!--								<a th:href="@{/user/show/{id}(id=${article.comment.user.id})}"-->
-<!--									class="d-inline-flex text-black align-middle">-->
-								<a href=""
-									class="d-inline-flex text-black align-middle">
-<!--									<img th:src="@{/uploads/users/{avatar}(avatar=${article.comment.user.avatar})}" width="24" height="24"-->
-<!--										class="rounded-circle">-->
-									<img th:src="@{/images/user_icon.png}" width="24" height="24"
-										class="rounded-circle">
-									<strong class="px-1">
-										article.comment.user.name
-									</strong>
+						<div th:each="comment : ${article.commentList}">
+							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
+								<small class="d-block">
+
+									<!-- コメントユーザー -->
+									<a th:href="@{/user/show/{id}(id=${comment.user.id})}" class="d-inline-flex text-black align-middle">
+										<img th:src="@{/uploads/{avatar}(avatar=${comment.user.avatar})}" width="24" height="24"
+											class="rounded-circle">
+										<strong class="px-1">
+											[[${comment.user.name}]]
+										</strong>
+									</a>
+
+									<!-- コメント内容 -->
+									[[${comment.body}]]
+
+								</small>
+
+								<!-- コメント削除 -->
+								<a th:if="loginStatusId == comment.user.id" href="" class="d-block ms-auto">
+									<i id="deleteComment" class="bi bi-trash3 text-muted"></i>
 								</a>
-								<!-- コメント内容 -->
-								article.comment.body
-							</small>
-							<!-- コメント削除 -->
-							<a href="" class="d-block ms-auto">
-								<i id="deleteComment" class="bi bi-trash3 text-muted"></i>
-							</a>
+
+							</div>
+
+							<!-- コメント日時 -->
+							<div>
+								<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
+									[[${#dates.format(comment.createdAt, 'yy-MM-dd HH-mm')}]]
+								</small>
+							</div>
+
 						</div>
 
-						<!-- コメント日時 -->
-						<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
-							article.comment.created
-						</small>
-
 						<!-- コメントフォーム -->
-						<form action="" method="post">
-							<!--
-							<input type="hidden" th:field="*{userId}" th:value="ログインユーザーID">
-							<input type="hidden" th:field="*{articleId}" th:value="表示投稿ID">
-							-->
+						<form th:action="@{/comment/add}" id="commentForm">
 							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
-								<textarea class="form-control border-0" rows="1" placeholder="コメントを追加"></textarea>
+								<input type="hidden" name="userId" th:value="${session.loginStatus.id}">
+								<input type="hidden" name="articleId" th:value="${article.id}">
+								<textarea name="body" class="form-control border-0" rows="1" placeholder="コメントを追加"></textarea>
 								<button class="d-block btn btn-sm btn-link pe-0" type="submit">
 									<i class="bi bi-send"></i>
 								</button>
 							</div>
 						</form>
+
+						<div id="result"></div>
 
 					</div>
 				</div>
@@ -114,27 +134,44 @@
 	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
-		$(document).ready(function () {
+		
+		//非同期コメント（途中）
+		$('#commentForm').submit(function (e) {
+			e.preventDefault();
 
-			//記事削除アラート
-			const deleteArticle = document.getElementById('deleteArticle');
-			deleteArticle.addEventListener('click', e => {
-				const result = confirm("本当に削除しますか？");
-				if (!result) {
-					e.preventDefault();
-				}
+			var $form = $(this),
+				userId = $form.find("input[name='userId']").val(),
+				articleId = $form.find("input[name='articleId']").val(),
+				body = $form.find("textarea[name='body']").val(),
+				url = $form.attr('action');
+
+			var posting = $.post(url, {userId: userId, articleId: articleId, body: body});
+			
+			posting.done(function (data) {
+				console.log(data.articleId);
+				$("#result").append(data.body);
 			});
-
-			//コメント削除アラート
-			const deleteComment = document.getElementById('deleteComment');
-			deleteComment.addEventListener('click', e => {
-				const result = confirm("本当に削除しますか？");
-				if (!result) {
-					e.preventDefault();
-				}
-			});
-
 		});
+
+		//記事削除アラート
+		const deleteArticle = document.getElementById('deleteArticle');
+		deleteArticle.addEventListener('click', e => {
+			const result = confirm("本当に削除しますか？");
+			if (!result) {
+				e.preventDefault();
+			}
+		});
+
+		//コメント削除アラート
+		const deleteComment = document.getElementById('deleteComment');
+		deleteComment.addEventListener('click', e => {
+			const result = confirm("本当に削除しますか？");
+			if (!result) {
+				e.preventDefault();
+			}
+		});
+
+
 
 	</script>
 </body>

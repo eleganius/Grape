@@ -21,12 +21,6 @@
 			<result property="avatar" column="avatar" />
 			<result property="name" column="name" />
 		</association>
-		<collection property="comment" ofType="com.example.app.domain.Comment">
-			<result property="userId" column="comment_user_id" />
-			<result property="articleId" column="comment_article_id" />
-			<result property="body" column="body" />
-			<result property="createdAt" column="comment_created_at" />
-		</collection>
 	</resultMap>
 
 	<select id="selectLimited" resultMap="article">
@@ -196,12 +190,7 @@
 		users.name,
 		likes.like_count,
 		like_is_dones.like_is_done,
-		comments.comment_count,
-		comment_lists.id AS comment_id,
-		comment_lists.user_id AS comment_user_id,
-		comment_lists.article_id AS comment_article_id,
-		comment_lists.body,
-		comment_lists.created_at AS comment_created_at
+		comments.comment_count
 		FROM articles
 		JOIN users
 		ON articles.user_id = users.id
@@ -214,8 +203,6 @@
 		LEFT JOIN (SELECT article_id, COUNT(*) AS comment_count
 			FROM comments GROUP BY article_id) AS comments
 		ON articles.id = comments.article_id
-		JOIN comments AS comment_lists
-		ON articles.id = comment_lists.article_id
 		WHERE articles.id = #{id}
 	</select>
 

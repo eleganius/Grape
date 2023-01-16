@@ -29,6 +29,6 @@ public class Article {
 	private int likeCount;
 	private boolean likeIsDone;
 	private int commentCount;
-	private List<Comment> comment;
+	private List<Comment> commentList;
 
 }

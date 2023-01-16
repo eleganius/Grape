@@ -10,16 +10,36 @@
 		<result property="articleId" column="article_id" />
 		<result property="body" column="body" />
 		<result property="createdAt" column="created_at" />
-		<association property="user" column="user_id"
+		<association property="user" column="comment_user_id"
 			javaType="com.example.app.domain.User">
-			<id property="id" column="user_id" />
+			<id property="id" column="comment_user_id" />
 			<result property="avatar" column="avatar" />
 			<result property="name" column="name" />
 		</association>
 	</resultMap>
 	
-	<select id="" resultMap="comment">
-	
+	<select id="selectAllByArticleId" resultMap="comment">
+		SELECT
+		comments.id,
+		comments.user_id,
+		comments.article_id,
+		comments.body,
+		comments.created_at,
+		users.id AS comment_user_id,
+		users.avatar,
+		users.name
+		FROM comments
+		JOIN users
+		ON comments.user_id = users.id
+		WHERE comments.article_id = #{articleId}
+		ORDER BY comments.created_at ASC
 	</select>
+	
+	<insert id="insert" parameterType="com.example.app.domain.Comment">
+		INSERT INTO comments
+		(user_id, article_id, body, created_at)
+		VALUES
+		(#{userId}, #{articleId}, #{body}, NOW())
+	</insert>
 
 </mapper>

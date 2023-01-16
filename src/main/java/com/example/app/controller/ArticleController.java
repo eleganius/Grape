@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.app.domain.Article;
 import com.example.app.login.LoginStatus;
 import com.example.app.service.ArticleService;
+import com.example.app.service.CommentService;
 
 @Controller
 @RequestMapping("/article")
@@ -27,6 +28,9 @@ public class ArticleController {
 
 	@Autowired
 	ArticleService service;
+
+	@Autowired
+	CommentService commentService;
 
 	@GetMapping("/list")
 	public String list(
@@ -48,8 +52,9 @@ public class ArticleController {
 	public String show(
 			@PathVariable Integer id,
 			Model model) throws Exception {
-		System.out.println(service.getArticleById(id));
-		model.addAttribute("article", service.getArticleById(id));
+		Article article = service.getArticleById(id);
+		article.setCommentList(commentService.getCommentListByArticleId(id));
+		model.addAttribute("article", article);
 		return "show-article";
 	}
 
