@@ -40,5 +40,10 @@
 		VALUES
 		(#{userId}, #{articleId}, #{body}, NOW())
 	</insert>
+	
+	<delete id="deleteById" parameterType="int">
+	 DELETE FROM comments
+	 WHERE comments.id = #{commentId}
+	</delete>
 
 </mapper>

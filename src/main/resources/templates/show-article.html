@@ -78,63 +78,65 @@
 							[[${article.caption}]]
 						</div>
 
-						<div th:each="comment : ${article.commentList}">
-							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
-								<small class="d-block">
+						<div id="template">
+							<div th:each="comment : ${article.commentList}">
+								<div class="d-flex align-items-center border-top border-light-subtle pt-2">
+									<small class="d-block">
 
-									<!-- コメントユーザー -->
-									<a th:href="@{/user/show/{id}(id=${comment.user.id})}" class="d-inline-flex text-black align-middle">
-										<img th:src="@{/uploads/{avatar}(avatar=${comment.user.avatar})}" width="24" height="24"
-											class="rounded-circle">
-										<strong class="px-1">
-											[[${comment.user.name}]]
-										</strong>
-									</a>
+										<!-- コメントユーザー -->
+										<a th:href="@{/user/show/{id}(id=${comment.user.id})}"
+											class="d-inline-flex text-black align-middle">
+											<img th:src="@{/uploads/{avatar}(avatar=${comment.user.avatar})}" width="24" height="24"
+												class="rounded-circle">
+											<strong class="px-1">
+												[[${comment.user.name}]]
+											</strong>
+										</a>
 
-									<!-- コメント内容 -->
-									<span>
-										[[${comment.body}]]
-									</span>
+										<!-- コメント内容 -->
+										<span>
+											[[${comment.body}]]
+										</span>
 
-								</small>
+									</small>
 
-								<!-- コメント削除 -->
-								<a th:if="loginStatusId == comment.user.id" href="" class="d-block ms-auto">
-									<i id="deleteComment" class="bi bi-trash3 text-muted"></i>
-								</a>
+									<!-- コメント削除 -->
+									<i th:if="${session.loginStatus.id == comment.user.id}"
+										class="bi bi-trash3 text-muted d-block ms-auto deleteComment" th:data-commentId="${comment.id}"></i>
 
+								</div>
+
+								<!-- コメント日時 -->
+								<div>
+									<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
+										[[${#dates.format(comment.createdAt, 'yy-MM-dd HH:mm')}]]
+									</small>
+								</div>
 							</div>
-
-							<!-- コメント日時 -->
-							<div>
-								<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
-									[[${#dates.format(comment.createdAt, 'yy-MM-dd HH:mm')}]]
-								</small>
-							</div>
-
 						</div>
 
-						<div id="result" class="d-flex align-items-center border-top border-light-subtle pt-2">
-							<small class="d-block">
-								<a href="" class="d-inline-flex text-black align-middle">
-									<img src="" width="24" height="24" class="rounded-circle">
-									<strong class="px-1">
-										<!-- comment.user.name -->
-									</strong>
-								</a>
-								<span>
-									<!-- comment.body -->
-								</span>
-							</small>
-							<a th:if="loginStatusId == comment.user.id" href="" class="d-block ms-auto">
-								<i id="deleteComment" class="bi bi-trash3 text-muted"></i>
-							</a>
+						<!-- 非同期コメント追加用テンプレート(ここに挿入される) -->
+						<template id="row-template">
+							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
+								<small class="d-block">
+									<a href="" class="d-inline-flex text-black align-middle">
+										<img src="" width="24" height="24" class="rounded-circle">
+										<strong class="px-1">
+											<!-- comment.user.name -->
+										</strong>
+									</a>
+									<span>
+										<!-- comment.body -->
+									</span>
+								</small>
+								<i class="bi bi-trash3 text-muted d-block ms-auto deleteComment" data-commentId=""></i>
+							</div>
 							<div>
 								<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
 									<!--comment.createdAt-->
 								</small>
 							</div>
-						</div>
+						</template>
 
 						<!-- コメントフォーム -->
 						<form th:action=" @{/comment/add}" id="commentForm">
@@ -156,59 +158,96 @@
 	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
+		$(document).ready(function () {
 
-		//非同期コメント（途中）
-		const $myform = $('#commentForm');
+			//非同期コメント
+			const $myform = $('#commentForm');
 
-		$myform.submit(function (e) {
-			e.preventDefault();
+			$myform.submit(function (e) {
+				e.preventDefault();
 
-			const url = $myform.attr('action');
-			const dataArr = [...new FormData(this)];
-			const data = Object.fromEntries(dataArr);
+				const url = $myform.attr('action');
+				const dataArr = [...new FormData(this)];
+				const data = Object.fromEntries(dataArr);
 
-			console.log(data);//デバッグ用
+				var $form = $(this),
+					userId = $form.find("input[name='userId']").val(),
+					articleId = $form.find("input[name='articleId']").val(),
+					body = $form.find("textarea[name='body']").val();
 
-			var $form = $(this),
-				userId = $form.find("input[name='userId']").val(),
-				articleId = $form.find("input[name='articleId']").val(),
-				body = $form.find("textarea[name='body']").val();
+				var posting = $.post(url, {
+					userId: userId,
+					articleId: articleId,
+					body: body,
+				});
 
-			var posting = $.post(url, {
-				userId: userId,
-				articleId: articleId,
-				body: body,
+				posting.done(function (res) {
+
+					console.log(res);
+
+					//DB追加後の画面処理
+					const template = $($('#template').html());
+					const clone = $($('#row-template').html());
+					clone.find('img').attr('src', '/uploads/' + res.user.avatar);
+					clone.find('strong').append(res.user.name);
+					clone.find('span').append(res.body);
+					clone.find('#date').append(res.createdAtSfd);
+					clone.find('i').attr('data-commenId', res.id);
+					$myform.before(clone);
+					
+					$("textarea[name='body']").val('');
+
+				});
+
 			});
 
-			posting.done(function (res) {
+			//記事削除アラート
+			const deleteArticle = document.getElementById('deleteArticle');
 
-				console.log(res);//デバッグ用
-
-				//DB追加後の画面処理
-				$('#result').find('img').attr('src', '/uploads/' + res.user.avatar);
-				$('#result').find('strong').append(res.user.name);
-				$('#result').find('span').append(res.body);
-				$('#result').find('#date').append(res.createdAt);
-			});
-
-		});
-
-		//記事削除アラート
-		const deleteArticle = document.getElementById('deleteArticle');
-		deleteArticle.addEventListener('click', e => {
-			const result = confirm("本当に削除しますか？");
-			if (!result) {
-				e.preventDefault();
+			if (deleteArticle) {
+				deleteArticle.addEventListener('click', e => {
+					const result = confirm("本当に削除しますか？");
+					if (!result) {
+						e.preventDefault();
+						return;
+					}
+				});
 			}
-		});
 
-		//コメント削除アラート
-		const deleteComment = document.getElementById('deleteComment');
-		deleteComment.addEventListener('click', e => {
-			const result = confirm("本当に削除しますか？");
-			if (!result) {
-				e.preventDefault();
+			//コメント削除アラート
+			let $deleteComments = $('.deleteComment');
+
+			for (let i = 0; i < $deleteComments.length; i++) {
+				$deleteComments[i].addEventListener('click', function (e) {
+
+					//デバッグ用
+					console.log($(this));
+					console.log($(this).data());
+					console.log($(this).data().commentid);
+
+					const result = confirm("本当に削除しますか？");
+					if (!result) {
+						e.preventDefault();
+						return;
+					}
+
+					$.ajax({
+						url: 'http://localhost:8888/comment/delete',
+						type: 'GET',
+						data: {commentId: $(this).data().commentid},
+						context: this,
+					})
+						.done(function (res) {
+							console.log(res);
+							$(this).parent().parent().empty();
+						})
+						.fail(function () {
+							alert('失敗しました');
+						})
+
+				});
 			}
+
 		});
 
 	</script>

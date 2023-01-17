@@ -20,7 +20,11 @@ public class CommentSeviceImpl implements CommentService {
 	@Override
 	public void addComment(Comment comment) throws Exception {
 		dao.insert(comment);
+	}
 
+	@Override
+	public void deleteCommentById(Integer id) throws Exception {
+		dao.deleteById(id);
 	}
 
 }

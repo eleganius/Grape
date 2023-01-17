@@ -8,4 +8,6 @@ public interface CommentService {
 
 	void addComment(Comment comment) throws Exception;
 
+	void deleteCommentById(Integer id) throws Exception;
+
 }

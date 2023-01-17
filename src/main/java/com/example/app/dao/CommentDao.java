@@ -11,4 +11,6 @@ public interface CommentDao {
 
 	void insert(Comment commnent) throws Exception;
 
+	void deleteById(Integer id) throws Exception;
+
 }

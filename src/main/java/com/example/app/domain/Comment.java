@@ -14,6 +14,9 @@ public class Comment {
 	private String body;
 	private Date createdAt;
 
+	//
+	private String createdAtSfd;
+
 	//JOINフィールド
 	private User user;
 
