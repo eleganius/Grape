@@ -11,7 +11,7 @@
 				<div class="col-8 col-sm-8 col-md-6 col-lg-4">
 					<div class="card p-2">
 
-						<div class="d-flex align-items-center">
+						<div class="d-flex align-items-center">2
 
 							<!-- 投稿者 -->
 							<a th:href="@{/user/show/{id}(id=${article.user.id})}" class="me-auto">
@@ -78,7 +78,7 @@
 							[[${article.caption}]]
 						</div>
 
-						<div id="template">
+						<div id="div-i">
 							<div th:each="comment : ${article.commentList}">
 								<div class="d-flex align-items-center border-top border-light-subtle pt-2">
 									<small class="d-block">
@@ -101,8 +101,10 @@
 									</small>
 
 									<!-- コメント削除 -->
-									<i th:if="${session.loginStatus.id == comment.user.id}"
-										class="bi bi-trash3 text-muted d-block ms-auto deleteComment" th:data-commentId="${comment.id}"></i>
+									<div>
+										<i th:if="${session.loginStatus.id == comment.user.id}"
+											class="bi bi-trash3 text-muted d-block ms-auto del" th:data-commentId="${comment.id}"></i>
+									</div>
 
 								</div>
 
@@ -116,25 +118,29 @@
 						</div>
 
 						<!-- 非同期コメント追加用テンプレート(ここに挿入される) -->
-						<template id="row-template">
-							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
-								<small class="d-block">
-									<a href="" class="d-inline-flex text-black align-middle">
-										<img src="" width="24" height="24" class="rounded-circle">
-										<strong class="px-1">
-											<!-- comment.user.name -->
-										</strong>
-									</a>
-									<span>
-										<!-- comment.body -->
-									</span>
-								</small>
-								<i class="bi bi-trash3 text-muted d-block ms-auto deleteComment" data-commentId=""></i>
-							</div>
+						<template id="template">
 							<div>
-								<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
-									<!--comment.createdAt-->
-								</small>
+								<div class="d-flex align-items-center border-top border-light-subtle pt-2">
+									<small class="d-block">
+										<a href="" class="d-inline-flex text-black align-middle">
+											<img src="" width="24" height="24" class="rounded-circle">
+											<strong class="px-1">
+												<!-- comment.user.name -->
+											</strong>
+										</a>
+										<span>
+											<!-- comment.body -->
+										</span>
+									</small>
+									<div>
+										<i class="bi bi-trash3 text-muted d-block ms-auto del" data-commentId=""></i>
+									</div>
+								</div>
+								<div>
+									<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
+										<!--comment.createdAt-->
+									</small>
+								</div>
 							</div>
 						</template>
 
@@ -161,6 +167,40 @@
 		$(document).ready(function () {
 
 			//非同期コメント
+			const $div_i = $('#div-i');
+
+			$div_i.on('click', 'i', function (e) {
+
+				const result = confirm("本当に削除しますか？");
+				if (!result) {
+					e.preventDefault();
+					return;
+				}
+
+				//デバッグ用
+				console.log($(this));
+				console.log($(this).data());
+				console.log($(this).data().commentid);
+				const commentId = $(this).data().commentid;
+				console.log(commentId);
+
+				$.ajax({
+					url: 'http://localhost:8888/comment/delete',
+					type: 'GET',
+					data: {commentId: commentId},
+					context: this,
+				})
+					.done(function (res) {
+						console.log(res);
+						$(this).parent().parent().parent().empty();
+					})
+					.fail(function () {
+						alert('失敗しました');
+					});
+
+			});
+
+			const $clone = $($('#template').html());
 			const $myform = $('#commentForm');
 
 			$myform.submit(function (e) {
@@ -175,78 +215,29 @@
 					articleId = $form.find("input[name='articleId']").val(),
 					body = $form.find("textarea[name='body']").val();
 
-				var posting = $.post(url, {
+				var $posting = $.post(url, {
 					userId: userId,
 					articleId: articleId,
 					body: body,
 				});
 
-				posting.done(function (res) {
+				$posting.done(function (res) {
 
 					console.log(res);
 
 					//DB追加後の画面処理
-					const template = $($('#template').html());
-					const clone = $($('#row-template').html());
-					clone.find('img').attr('src', '/uploads/' + res.user.avatar);
-					clone.find('strong').append(res.user.name);
-					clone.find('span').append(res.body);
-					clone.find('#date').append(res.createdAtSfd);
-					clone.find('i').attr('data-commenId', res.id);
-					$myform.before(clone);
-					
+					$clone.find('img').attr('src', '/uploads/' + res.user.avatar);
+					$clone.find('strong').append(res.user.name);
+					$clone.find('span').append(res.body);
+					$clone.find('#date').append(res.createdAtSfd);
+					$clone.find('i').attr('data-commentId', res.id);
+					$div_i.append($clone);
+
 					$("textarea[name='body']").val('');
 
 				});
 
 			});
-
-			//記事削除アラート
-			const deleteArticle = document.getElementById('deleteArticle');
-
-			if (deleteArticle) {
-				deleteArticle.addEventListener('click', e => {
-					const result = confirm("本当に削除しますか？");
-					if (!result) {
-						e.preventDefault();
-						return;
-					}
-				});
-			}
-
-			//コメント削除アラート
-			let $deleteComments = $('.deleteComment');
-
-			for (let i = 0; i < $deleteComments.length; i++) {
-				$deleteComments[i].addEventListener('click', function (e) {
-
-					//デバッグ用
-					console.log($(this));
-					console.log($(this).data());
-					console.log($(this).data().commentid);
-
-					const result = confirm("本当に削除しますか？");
-					if (!result) {
-						e.preventDefault();
-						return;
-					}
-
-					$.ajax({
-						url: 'http://localhost:8888/comment/delete',
-						type: 'GET',
-						data: {commentId: $(this).data().commentid},
-						context: this,
-					})
-						.done(function (res) {
-							console.log(res);
-							$(this).parent().parent().empty();
-						})
-						.fail(function () {
-							alert('失敗しました');
-						})
-
-				});
-			}
 
 		});
 

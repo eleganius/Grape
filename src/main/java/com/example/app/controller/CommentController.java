@@ -33,7 +33,7 @@ public class CommentController {
 
 	@GetMapping("/delete")
 	public void deleteComment(
-			@RequestParam Integer commentId) throws Exception {
+			@RequestParam int commentId) throws Exception {
 		service.deleteCommentById(commentId);
 	}
 }
