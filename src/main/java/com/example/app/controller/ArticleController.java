@@ -50,11 +50,16 @@ public class ArticleController {
 
 	@GetMapping("/show/{id}")
 	public String show(
+			HttpSession session,
 			@PathVariable Integer id,
 			Model model) throws Exception {
-		Article article = service.getArticleById(id);
-		article.setCommentList(commentService.getCommentListByArticleId(id));
+
+		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
+
+		Article article = service.getArticleById(id, loginStatus.getId());
 		model.addAttribute("article", article);
+
+		//model.addAttribute(new Comment());
 		return "show-article";
 	}
 
@@ -98,9 +103,11 @@ public class ArticleController {
 
 	@GetMapping("/edit/{id}")
 	public String edit(
+			HttpSession session,
 			@PathVariable Integer id,
 			Model model) throws Exception {
-		model.addAttribute("article", service.getArticleById(id));
+		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
+		model.addAttribute("article", service.getArticleById(id, loginStatus.getId()));
 		return "edit-article";
 	}
 

@@ -1,7 +1,5 @@
 package com.example.app.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +13,8 @@ public class CommentSeviceImpl implements CommentService {
 	CommentDao dao;
 
 	@Override
-	public List<Comment> getCommentListByArticleId(Integer articleId) throws Exception {
-		return dao.selectAllByArticleId(articleId);
+	public Comment getCommentById(Integer id) throws Exception {
+		return dao.selectCommentById(id);
 	}
 
 	@Override

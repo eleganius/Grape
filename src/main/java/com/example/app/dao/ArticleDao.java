@@ -44,7 +44,7 @@ public interface ArticleDao {
 
 	Long countLikedByUserId(Integer id) throws Exception;
 
-	Article selectById(Integer id) throws Exception;
+	Article selectById(Integer id, Integer loginStatusId) throws Exception;
 
 	void insert(Article article) throws Exception;
 

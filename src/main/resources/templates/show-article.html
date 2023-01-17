@@ -92,7 +92,9 @@
 									</a>
 
 									<!-- コメント内容 -->
-									[[${comment.body}]]
+									<span>
+										[[${comment.body}]]
+									</span>
 
 								</small>
 
@@ -106,14 +108,36 @@
 							<!-- コメント日時 -->
 							<div>
 								<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
-									[[${#dates.format(comment.createdAt, 'yy-MM-dd HH-mm')}]]
+									[[${#dates.format(comment.createdAt, 'yy-MM-dd HH:mm')}]]
 								</small>
 							</div>
 
 						</div>
 
+						<div id="result" class="d-flex align-items-center border-top border-light-subtle pt-2">
+							<small class="d-block">
+								<a href="" class="d-inline-flex text-black align-middle">
+									<img src="" width="24" height="24" class="rounded-circle">
+									<strong class="px-1">
+										<!-- comment.user.name -->
+									</strong>
+								</a>
+								<span>
+									<!-- comment.body -->
+								</span>
+							</small>
+							<a th:if="loginStatusId == comment.user.id" href="" class="d-block ms-auto">
+								<i id="deleteComment" class="bi bi-trash3 text-muted"></i>
+							</a>
+							<div>
+								<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
+									<!--comment.createdAt-->
+								</small>
+							</div>
+						</div>
+
 						<!-- コメントフォーム -->
-						<form th:action="@{/comment/add}" id="commentForm">
+						<form th:action=" @{/comment/add}" id="commentForm">
 							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
 								<input type="hidden" name="userId" th:value="${session.loginStatus.id}">
 								<input type="hidden" name="articleId" th:value="${article.id}">
@@ -124,8 +148,6 @@
 							</div>
 						</form>
 
-						<div id="result"></div>
-
 					</div>
 				</div>
 			</div>
@@ -134,23 +156,41 @@
 	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
-		
+
 		//非同期コメント（途中）
-		$('#commentForm').submit(function (e) {
+		const $myform = $('#commentForm');
+
+		$myform.submit(function (e) {
 			e.preventDefault();
+
+			const url = $myform.attr('action');
+			const dataArr = [...new FormData(this)];
+			const data = Object.fromEntries(dataArr);
+
+			console.log(data);//デバッグ用
 
 			var $form = $(this),
 				userId = $form.find("input[name='userId']").val(),
 				articleId = $form.find("input[name='articleId']").val(),
-				body = $form.find("textarea[name='body']").val(),
-				url = $form.attr('action');
+				body = $form.find("textarea[name='body']").val();
 
-			var posting = $.post(url, {userId: userId, articleId: articleId, body: body});
-			
-			posting.done(function (data) {
-				console.log(data.articleId);
-				$("#result").append(data.body);
+			var posting = $.post(url, {
+				userId: userId,
+				articleId: articleId,
+				body: body,
 			});
+
+			posting.done(function (res) {
+
+				console.log(res);//デバッグ用
+
+				//DB追加後の画面処理
+				$('#result').find('img').attr('src', '/uploads/' + res.user.avatar);
+				$('#result').find('strong').append(res.user.name);
+				$('#result').find('span').append(res.body);
+				$('#result').find('#date').append(res.createdAt);
+			});
+
 		});
 
 		//記事削除アラート
@@ -170,8 +210,6 @@
 				e.preventDefault();
 			}
 		});
-
-
 
 	</script>
 </body>

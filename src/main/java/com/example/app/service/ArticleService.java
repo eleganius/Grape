@@ -30,7 +30,7 @@ public interface ArticleService {
 
 	int getTotalLikedPagesByUserId(int numPerPage, Integer id) throws Exception;
 
-	Article getArticleById(Integer id) throws Exception;
+	Article getArticleById(Integer id, Integer loguinStatusId) throws Exception;
 
 	void addArticle(Article article, MultipartFile upfile) throws Exception;
 

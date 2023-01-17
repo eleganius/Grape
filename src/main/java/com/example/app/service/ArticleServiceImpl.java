@@ -72,8 +72,8 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public Article getArticleById(Integer id) throws Exception {
-		return articleDao.selectById(id);
+	public Article getArticleById(Integer id, Integer loginStatusId) throws Exception {
+		return articleDao.selectById(id, loginStatusId);
 	}
 
 	@Override

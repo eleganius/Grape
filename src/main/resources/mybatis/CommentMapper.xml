@@ -6,7 +6,6 @@
 
 	<resultMap id="comment" type="com.example.app.domain.Comment">
 		<id property="id" column="id" />
-		<result property="userId" column="user_id" />
 		<result property="articleId" column="article_id" />
 		<result property="body" column="body" />
 		<result property="createdAt" column="created_at" />
@@ -15,27 +14,27 @@
 			<id property="id" column="comment_user_id" />
 			<result property="avatar" column="avatar" />
 			<result property="name" column="name" />
+			<result property="status" column="status" />
 		</association>
 	</resultMap>
-	
-	<select id="selectAllByArticleId" resultMap="comment">
+
+	<select id="selectCommentById" resultMap="comment">
 		SELECT
 		comments.id,
-		comments.user_id,
-		comments.article_id,
 		comments.body,
 		comments.created_at,
 		users.id AS comment_user_id,
 		users.avatar,
-		users.name
+		users.name,
+		users.status
 		FROM comments
 		JOIN users
 		ON comments.user_id = users.id
-		WHERE comments.article_id = #{articleId}
-		ORDER BY comments.created_at ASC
+		WHERE comments.id = #{id};
 	</select>
-	
-	<insert id="insert" parameterType="com.example.app.domain.Comment">
+
+	<insert id="insert" parameterType="com.example.app.domain.Comment"
+	useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO comments
 		(user_id, article_id, body, created_at)
 		VALUES

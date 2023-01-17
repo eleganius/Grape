@@ -6,21 +6,39 @@
 
 	<resultMap id="article" type="com.example.app.domain.Article">
 		<id property="id" column="id" />
-		<result property="userId" column="user_id" />
 		<result property="image" column="image" />
 		<result property="caption" column="caption" />
 		<result property="createdAt" column="created_at" />
-		<result property="updatedAt" column="updated_at" />
 		<result property="status" column="status" />
 		<result property="likeCount" column="like_count" />
 		<result property="likeIsDone" column="like_is_done" />
 		<result property="commentCount" column="comment_count" />
+
 		<association property="user" column="user_id"
 			javaType="com.example.app.domain.User">
 			<id property="id" column="user_id" />
 			<result property="avatar" column="avatar" />
 			<result property="name" column="name" />
+			<result property="status" column="article_user_status" />
 		</association>
+
+		<collection property="commentList"
+		ofType="com.example.app.domain.Comment">
+			<id property="id" column="comment_id" />
+			<result property="articleId" column="article_id" />
+			<result property="body" column="body" />
+			<result property="createdAt" column="comment_created_at" />
+
+			<association property="user" column="comment_user_id"
+			javaType="com.example.app.domain.User">
+			<id property="id" column="comment_user_id" />
+			<result property="avatar" column="comment_user_avatar" />
+			<result property="name" column="comment_user_name" />
+			<result property="status" column="comment_user_status" />
+			</association>
+
+		</collection>
+
 	</resultMap>
 
 	<select id="selectLimited" resultMap="article">
@@ -53,7 +71,7 @@
 		ORDER BY articles.created_at DESC
 		LIMIT #{offset}, #{num}
 	</select>
-	
+
 	<select id="selectLimitedByShowUserId" resultMap="article">
 		SELECT
 		articles.id,
@@ -85,7 +103,7 @@
 		ORDER BY articles.created_at DESC
 		LIMIT #{offset}, #{num}
 	</select>
-	
+
 	<select id="selectLimitedByUserIdAndPrivate" resultMap="article">
 		SELECT
 		articles.id,
@@ -117,7 +135,7 @@
 		ORDER BY articles.created_at DESC
 		LIMIT #{offset}, #{num}
 	</select>
-	
+
 	<select id="selectLimitedByUserIdAndLiked" resultMap="article">
 		SELECT
 		articles.id,
@@ -156,19 +174,19 @@
 		SELECT COUNT(*) FROM articles
 		WHERE articles.status = 'PUB'
 	</select>
-	
+
 	<select id="countPublicByUserId" resultType="long">
 		SELECT COUNT(*) FROM articles
 		WHERE articles.status = 'PUB'
 		AND articles.user_id = #{id}
 	</select>
-	
+
 	<select id="countPrivateByUserId" resultType="long">
 		SELECT COUNT(*) FROM articles
 		WHERE articles.status = 'PRI'
 		AND articles.user_id = #{id}
 	</select>
-	
+
 	<select id="countLikedByUserId" resultType="long">
 		SELECT COUNT(*) FROM articles
 		JOIN (SELECT article_id, if(article_id, 1, 0) AS like_is_done
@@ -183,14 +201,22 @@
 		articles.image,
 		articles.caption,
 		articles.created_at,
-		articles.updated_at,
 		articles.status,
 		users.id AS user_id,
 		users.avatar,
 		users.name,
+		users.status AS article_user_status,
 		likes.like_count,
 		like_is_dones.like_is_done,
-		comments.comment_count
+		comments.comment_count,
+		comment_list.id AS comment_id,
+		comment_list.article_id,
+		comment_list.body,
+		comment_list.created_at AS comment_created_at,
+		comment_list.comment_user_id,
+		comment_list.avatar AS comment_user_avatar,
+		comment_list.name AS comment_user_name,
+		comment_list.status AS comment_user_status
 		FROM articles
 		JOIN users
 		ON articles.user_id = users.id
@@ -203,6 +229,20 @@
 		LEFT JOIN (SELECT article_id, COUNT(*) AS comment_count
 			FROM comments GROUP BY article_id) AS comments
 		ON articles.id = comments.article_id
+		LEFT JOIN (SELECT
+			comments.id,
+			comments.article_id,
+			comments.body,
+			comments.created_at,
+			users.id AS comment_user_id,
+			users.avatar,
+			users.name,
+			users.status
+			FROM comments
+			JOIN users
+			ON comments.user_id = users.id
+			ORDER BY comments.created_at ASC) AS comment_list
+		ON articles.id = comment_list.article_id
 		WHERE articles.id = #{id}
 	</select>
 
