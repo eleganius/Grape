@@ -12,6 +12,8 @@ public interface UserService {
 
 	User getUserById(Integer id) throws Exception;
 
+	User getUserByIdWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception;
+
 	void addUser(User user, MultipartFile upfile) throws Exception;
 
 	void editUser(User user, MultipartFile upfile) throws Exception;

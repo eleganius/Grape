@@ -23,18 +23,18 @@
 		</association>
 
 		<collection property="commentList"
-		ofType="com.example.app.domain.Comment">
+			ofType="com.example.app.domain.Comment">
 			<id property="id" column="comment_id" />
 			<result property="articleId" column="article_id" />
 			<result property="body" column="body" />
 			<result property="createdAt" column="comment_created_at" />
 
 			<association property="user" column="comment_user_id"
-			javaType="com.example.app.domain.User">
-			<id property="id" column="comment_user_id" />
-			<result property="avatar" column="comment_user_avatar" />
-			<result property="name" column="comment_user_name" />
-			<result property="status" column="comment_user_status" />
+				javaType="com.example.app.domain.User">
+				<id property="id" column="comment_user_id" />
+				<result property="avatar" column="comment_user_avatar" />
+				<result property="name" column="comment_user_name" />
+				<result property="status" column="comment_user_status" />
 			</association>
 
 		</collection>

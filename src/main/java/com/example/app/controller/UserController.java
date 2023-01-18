@@ -43,8 +43,8 @@ public class UserController {
 			Model model) throws Exception {
 
 		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
-
-		model.addAttribute("user", userService.getUserById(id));
+		Integer loginUserId = loginStatus.getId();
+		model.addAttribute("user", userService.getUserByIdWithFollowCount(loginUserId, id));
 
 		model.addAttribute("currentPage", page);
 

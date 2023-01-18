@@ -15,6 +15,9 @@
 		<result property="createdAt" column="created_at" />
 		<result property="updatedAt" column="updated_at" />
 		<result property="status" column="status" />
+		<result property="followingCount" column="following_count" />
+		<result property="followeeCount" column="followee_count" />
+		<result property="followIsDone" column="follow_is_done" />
 	</resultMap>
 
 	<select id="selectUserByEmail"
@@ -27,6 +30,30 @@
 		resultType="com.example.app.domain.User">
 		SELECT * FROM users
 		WHERE users.id = #{id}
+	</select>
+	
+	<select id="selectByIdWithFollowCount" resultType="com.example.app.domain.User">
+		SELECT
+		users.id,
+		users.avatar,
+		users.name,
+		users.introduction,
+		users.status,
+		following_count.following_count,
+		followee_count.followee_count,
+		follow_is_dones.follow_is_done
+		FROM users
+		LEFT JOIN
+		(SELECT following_id, COUNT(*) AS following_count FROM follows GROUP BY following_id) AS following_count
+		ON users.id = following_count.following_id
+		LEFT JOIN
+		(SELECT followee_id, COUNT(*) AS followee_count FROM follows GROUP BY followee_id) AS followee_count
+		ON users.id = followee_count.followee_id
+		LEFT JOIN
+		(SELECT followee_id, if(followee_id, 1, 0) AS follow_is_done
+		FROM follows WHERE following_id = #{loginUserId}) AS follow_is_dones
+		ON users.id = follow_is_dones.followee_id
+		WHERE users.id = #{showUserId}
 	</select>
 
 	<insert id="insert" parameterType="com.example.app.domain.User"

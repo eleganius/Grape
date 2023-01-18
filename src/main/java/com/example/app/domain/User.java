@@ -1,6 +1,7 @@
 package com.example.app.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -48,7 +49,8 @@ public class User {
 	private String status;
 
 	//JOINフィールド
-	private int followerCount;
+	private List<Follow> followList;
+	private int followingCount;
 	private int followeeCount;
 	private boolean followIsDone;
 

@@ -30,9 +30,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User getUserByIdWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception {
+		return userDao.selectByIdWithFollowCount(loginUserId, showUserId);
+	}
+
+	@Override
 	public void addUser(User user, MultipartFile upfile) throws Exception {
 		userDao.insert(addEditCommon(user, upfile));
-
 	}
 
 	@Override

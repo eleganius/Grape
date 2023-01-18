@@ -10,7 +10,11 @@ public interface UserDao {
 	//ログイン用
 	User selectUserByEmail(String email) throws Exception;
 
+	//ユーザー編集用
 	User selectById(Integer id) throws Exception;
+
+	//show-user.html用
+	User selectByIdWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception;
 
 	void insert(User user) throws Exception;
 
