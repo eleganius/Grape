@@ -14,7 +14,8 @@ public class Comment {
 	private String body;
 	private Date createdAt;
 
-	//
+	//addComment時使用
+	private long commentCount;
 	private String createdAtSfd;
 
 	//JOINフィールド

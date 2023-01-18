@@ -13,8 +13,8 @@ public class Follow {
 	private Integer followeeId;
 	private Date created;
 
-	//例外フィールド
-	private Integer followerCount;
+	//JOINフィールド
+	private Integer followingCount;
 	private Integer followeeCount;
 	private Boolean done;
 	private User user;

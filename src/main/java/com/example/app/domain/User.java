@@ -48,6 +48,8 @@ public class User {
 	private String status;
 
 	//JOINフィールド
-	private Follow follow;
+	private int followerCount;
+	private int followeeCount;
+	private boolean followIsDone;
 
 }

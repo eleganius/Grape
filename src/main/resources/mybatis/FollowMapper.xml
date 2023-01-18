@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.dao.FollowDao">
+
+	<!-- フォローしている数 -->
+	<select id="countFollowing" resultType="long">
+		SELECT COUNT(*) FROM follows
+		WHERE following_id = #{showUserId}
+	</select>
+
+	<!-- フォローされている数 -->
+	<select id="countFollowee" resultType="long">
+		SELECT COUNT(*) FROM follows
+		WHERE followee_id = #{showUserId}
+	</select>
+
+	<insert id="insert" parameterType="int">
+		INSERT INTO follows
+		(following_id, followee_id, created_at)
+		VALUES
+		(#{loginUserId}, #{showUserId}, NOW())
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM follows
+		WHERE following_id = #{loginUserId}
+		AND followee_id = #{showUserId}
+	</delete>
+
+</mapper>

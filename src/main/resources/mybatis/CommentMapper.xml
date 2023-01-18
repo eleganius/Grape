@@ -9,6 +9,7 @@
 		<result property="articleId" column="article_id" />
 		<result property="body" column="body" />
 		<result property="createdAt" column="created_at" />
+		<result property="commentCount" column="comment_count" />
 		<association property="user" column="comment_user_id"
 			javaType="com.example.app.domain.User">
 			<id property="id" column="comment_user_id" />
@@ -26,11 +27,23 @@
 		users.id AS comment_user_id,
 		users.avatar,
 		users.name,
-		users.status
+		users.status,
+		comment_counts.article_id,
+		comment_counts.comment_count
 		FROM comments
 		JOIN users
 		ON comments.user_id = users.id
+		LEFT JOIN (SELECT article_id, COUNT(*) AS comment_count
+		FROM comments GROUP BY article_id) AS comment_counts
+		ON comments.article_id = comment_counts.article_id
 		WHERE comments.id = #{id};
+	</select>
+
+	<select id="countCommentByArticleId" resultType="long">
+		SELECT
+		COUNT(*)
+		FROM comments
+		WHERE article_id = #{articleId}
 	</select>
 
 	<insert id="insert" parameterType="com.example.app.domain.Comment"
@@ -40,10 +53,10 @@
 		VALUES
 		(#{userId}, #{articleId}, #{body}, NOW())
 	</insert>
-	
+
 	<delete id="deleteById" parameterType="int">
-	 DELETE FROM comments
-	 WHERE comments.id = #{commentId}
+		DELETE FROM comments
+		WHERE comments.id = #{commentId}
 	</delete>
 
 </mapper>

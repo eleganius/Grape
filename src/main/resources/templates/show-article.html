@@ -11,7 +11,7 @@
 				<div class="col-8 col-sm-8 col-md-6 col-lg-4">
 					<div class="card p-2">
 
-						<div class="d-flex align-items-center">2
+						<div class="d-flex align-items-center">
 
 							<!-- 投稿者 -->
 							<a th:href="@{/user/show/{id}(id=${article.user.id})}" class="me-auto">
@@ -52,7 +52,7 @@
 								<!-- コメント -->
 								<small class="px-1">
 									<i class="bi bi-chat-dots text-muted"></i>
-									<span id="CommentCount">[[${article.commentCount}]]</span>
+									<span id="commentCount">[[${article.commentCount}]]</span>
 								</small>
 
 								<!-- offcanvas -->
@@ -82,7 +82,6 @@
 							<div th:each="comment : ${article.commentList}">
 								<div class="d-flex align-items-center border-top border-light-subtle pt-2">
 									<small class="d-block">
-
 										<!-- コメントユーザー -->
 										<a th:href="@{/user/show/{id}(id=${comment.user.id})}"
 											class="d-inline-flex text-black align-middle">
@@ -92,58 +91,25 @@
 												[[${comment.user.name}]]
 											</strong>
 										</a>
-
 										<!-- コメント内容 -->
 										<span>
 											[[${comment.body}]]
 										</span>
-
 									</small>
-
 									<!-- コメント削除 -->
 									<div>
 										<i th:if="${session.loginStatus.id == comment.user.id}"
-											class="bi bi-trash3 text-muted d-block ms-auto del" th:data-commentId="${comment.id}"></i>
+											class="bi bi-trash3 text-muted d-block ms-auto del" th:data-commentId="${comment.id}"
+											th:data-articleId="${article.id}"></i>
 									</div>
-
 								</div>
-
 								<!-- コメント日時 -->
-								<div>
-									<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
-										[[${#dates.format(comment.createdAt, 'yy-MM-dd HH:mm')}]]
-									</small>
-								</div>
+								<small class="d-block text-end text-muted" style="font-size: 0.5rem;">
+									[[${#dates.format(comment.createdAt, 'yy-MM-dd HH:mm')}]]
+								</small>
 							</div>
+							<!-- ここに複製を追加 -->
 						</div>
-
-						<!-- 非同期コメント追加用テンプレート(ここに挿入される) -->
-						<template id="template">
-							<div>
-								<div class="d-flex align-items-center border-top border-light-subtle pt-2">
-									<small class="d-block">
-										<a href="" class="d-inline-flex text-black align-middle">
-											<img src="" width="24" height="24" class="rounded-circle">
-											<strong class="px-1">
-												<!-- comment.user.name -->
-											</strong>
-										</a>
-										<span>
-											<!-- comment.body -->
-										</span>
-									</small>
-									<div>
-										<i class="bi bi-trash3 text-muted d-block ms-auto del" data-commentId=""></i>
-									</div>
-								</div>
-								<div>
-									<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
-										<!--comment.createdAt-->
-									</small>
-								</div>
-							</div>
-						</template>
-
 						<!-- コメントフォーム -->
 						<form th:action=" @{/comment/add}" id="commentForm">
 							<div class="d-flex align-items-center border-top border-light-subtle pt-2">
@@ -155,12 +121,35 @@
 								</button>
 							</div>
 						</form>
-
 					</div>
 				</div>
 			</div>
 		</div>
 	</main>
+	<!-- 非同期コメント追加用テンプレート -->
+	<template id="template">
+		<div>
+			<div class="d-flex align-items-center border-top border-light-subtle pt-2">
+				<small class="d-block">
+					<a href="" class="d-inline-flex text-black align-middle">
+						<img src="" width="24" height="24" class="rounded-circle">
+						<strong class="px-1">
+							<!-- comment.user.name -->
+						</strong>
+					</a>
+					<span>
+						<!-- comment.body -->
+					</span>
+				</small>
+				<div>
+					<i class="bi bi-trash3 text-muted d-block ms-auto del" data-commentId="" data-articleId=""></i>
+				</div>
+			</div>
+			<small id="date" class="d-block text-end text-muted" style="font-size: 0.5rem;">
+				<!--comment.createdAt-->
+			</small>
+		</div>
+	</template>
 	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
@@ -169,30 +158,29 @@
 			//非同期コメント
 			const $div_i = $('#div-i');
 
-			$div_i.on('click', 'i', function (e) {
-
+			$div_i.on('click', '.del', function (e) {
 				const result = confirm("本当に削除しますか？");
 				if (!result) {
 					e.preventDefault();
 					return;
 				}
 
-				//デバッグ用
-				console.log($(this));
-				console.log($(this).data());
-				console.log($(this).data().commentid);
+				//コメント削除処理
 				const commentId = $(this).data().commentid;
-				console.log(commentId);
+				const articleId = $(this).data().articleid;
 
 				$.ajax({
 					url: 'http://localhost:8888/comment/delete',
 					type: 'GET',
-					data: {commentId: commentId},
+					data: {
+						commentId: commentId,
+						articleId: articleId
+					},
 					context: this,
 				})
 					.done(function (res) {
-						console.log(res);
 						$(this).parent().parent().parent().empty();
+						$('#commentCount').empty().append(res);
 					})
 					.fail(function () {
 						alert('失敗しました');
@@ -200,7 +188,7 @@
 
 			});
 
-			const $clone = $($('#template').html());
+			//コメント追加処理
 			const $myform = $('#commentForm');
 
 			$myform.submit(function (e) {
@@ -222,18 +210,18 @@
 				});
 
 				$posting.done(function (res) {
-
-					console.log(res);
-
 					//DB追加後の画面処理
+					const $clone = $($('#template').html());
 					$clone.find('img').attr('src', '/uploads/' + res.user.avatar);
 					$clone.find('strong').append(res.user.name);
 					$clone.find('span').append(res.body);
 					$clone.find('#date').append(res.createdAtSfd);
 					$clone.find('i').attr('data-commentId', res.id);
-					$div_i.append($clone);
+					$clone.find('i').attr('data-articleId', res.articleId);
+					$clone.appendTo('#div-i');
 
 					$("textarea[name='body']").val('');
+					$('#commentCount').empty().append(res.commentCount);
 
 				});
 

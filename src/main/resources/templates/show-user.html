@@ -29,8 +29,12 @@
 								style="border-radius: 50%; object-fit: cover;">
 
 							<!-- フォローボタン -->
-							<input id="addFollowBtn" class="btn btn-sm btn-primary mx-auto" type="button" value="フォローする">
-							<input id="deleteFollowBtn" class="btn btn-sm btn-info mx-auto" type="button" value="フォロー中">
+							<button id="addFollowBtn" class="btn btn-sm btn-primary mx-auto" type="button"
+								th:data-showUserId="${user.id}">
+								フォローする</button>
+							<button id="deleteFollowBtn" class="btn btn-sm btn-info mx-auto" type="button"
+								th:data-showUserId="${user.id}">
+								フォロー中</button>
 						</div>
 
 						<div class="d-grid gap-2 px-2">
@@ -42,15 +46,17 @@
 								フォロワー
 								<button id="follower" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
 									data-bs-toggle="modal" data-bs-target="#exampleModal">
-									<span style="bottom: 2px; position: relative;">
+									<span id="followeeCount" style="bottom: 2px; position: relative;">
 										100
+										<!-- user.followingCount -->
 									</span>
 								</button>
 								フォロー中
 								<button id="following" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
 									data-bs-toggle="modal" data-bs-target="#exampleModal">
-									<span style="bottom: 2px; position: relative;">
+									<span id="followingCount" style="bottom: 2px; position: relative;">
 										100
+										<!-- user.followerCount -->
 									</span>
 								</button>
 							</div>
@@ -100,19 +106,44 @@
 				}
 			});
 
-			//フォローボタントグル
-			$('#deleteFollowBtn').hide();
+			//非同期フォローボタン
+			const $followeeId_add = $('#addFollowBtn').data().showuserid;
+			const $followeeId_del = $('#deleteFollowBtn').data().showuserid;
+			//追加時
 			$('#addFollowBtn').click(function () {
-				$(this).hide();
-				$('#deleteFollowBtn').show();
+				$.ajax({
+					url: 'http://localhost:8888/follow/add',
+					type: 'GET',
+					data: {showUserId: $followeeId_add},
+					context: this,
+				})
+					.done(function (res) {
+						$('#followeeCount').empty().append(res);
+						$(this).hide();
+						$('#deleteFollowBtn').show();
+					})
+					.fail(function () {
+						alert('失敗しました')
+					});
 			});
+			//解除時
 			$('#deleteFollowBtn').click(function () {
-				$(this).hide();
-				$('#addFollowBtn').show();
+				$.ajax({
+					url: 'http://localhost:8888/follow/delete',
+					type: 'GET',
+					data: {showUserId: $followeeId_del},
+					context: this,
+				})
+					.done(function (res) {
+						$('#followeeCount').empty().append(res);
+						$(this).hide();
+						$('#addFollowBtn').show();
+					})
+					.fail(function () {
+						alert('失敗しました');
+					});
 			});
-
 		});
-
 	</script>
 </body>
 

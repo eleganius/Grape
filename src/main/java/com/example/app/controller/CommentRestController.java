@@ -14,7 +14,7 @@ import com.example.app.service.CommentService;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentController {
+public class CommentRestController {
 
 	@Autowired
 	CommentService service;
@@ -32,8 +32,11 @@ public class CommentController {
 	}
 
 	@GetMapping("/delete")
-	public void deleteComment(
-			@RequestParam int commentId) throws Exception {
+	public long deleteComment(
+			@RequestParam int commentId,
+			@RequestParam int articleId) throws Exception {
 		service.deleteCommentById(commentId);
+		long commentCount = service.getTotalCommentsByArticleId(articleId);
+		return commentCount;
 	}
 }

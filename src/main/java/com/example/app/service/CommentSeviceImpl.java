@@ -18,6 +18,11 @@ public class CommentSeviceImpl implements CommentService {
 	}
 
 	@Override
+	public long getTotalCommentsByArticleId(Integer articleId) throws Exception {
+		return dao.countCommentByArticleId(articleId);
+	}
+
+	@Override
 	public void addComment(Comment comment) throws Exception {
 		dao.insert(comment);
 	}
