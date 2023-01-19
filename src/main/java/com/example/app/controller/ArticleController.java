@@ -24,7 +24,7 @@ import com.example.app.service.CommentService;
 @RequestMapping("/article")
 public class ArticleController {
 
-	private static final int NUM_PER_PAGE = 9;
+	private static final int NUM_PER_PAGE = 6;
 
 	@Autowired
 	ArticleService service;
@@ -37,7 +37,6 @@ public class ArticleController {
 			HttpSession session,
 			@RequestParam(name = "page", defaultValue = "1") Integer page,
 			Model model) throws Exception {
-
 		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
 
 		int totalPages = service.getTotalPages(NUM_PER_PAGE);
@@ -45,6 +44,7 @@ public class ArticleController {
 		model.addAttribute("currentPage", page);
 		model.addAttribute("articleList",
 				service.getArticleListByPage(page, NUM_PER_PAGE, loginStatus.getId()));
+		System.out.println(loginStatus);
 		return "list-article";
 	}
 
@@ -58,8 +58,6 @@ public class ArticleController {
 
 		Article article = service.getArticleById(id, loginStatus.getId());
 		model.addAttribute("article", article);
-
-		//model.addAttribute(new Comment());
 		return "show-article";
 	}
 
@@ -81,7 +79,7 @@ public class ArticleController {
 			Model model,
 			RedirectAttributes redirectAttributes) throws Exception {
 
-		//投稿者＝ログインユーザー※input type=hiddenでも可
+		//投稿者＝ログインユーザー
 		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
 		article.setUserId(loginStatus.getId());
 

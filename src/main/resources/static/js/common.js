@@ -6,13 +6,13 @@
 	console.log(url);//デバッグ用
 
 	//articleList以外検索フォーム非表示
-	if (url.pathname !== '/article/list') {
-
-		const search = document.getElementById('search');
-
-		search.remove();
-
-	}
+	//	if (url.pathname !== '/article/list') {
+	//
+	//		const search = document.getElementById('search');
+	//
+	//		search.remove();
+	//
+	//	}
 
 	//ログアウトアラート
 	const logout = document.getElementById('logout');

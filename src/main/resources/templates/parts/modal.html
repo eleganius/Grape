@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Modal -->
+<div th:fragment="followList()" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" id="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+				<button id="closeModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<template id="template">
+				<div class="modal-body">
+					<div class="d-grid gap-4"></div>
+				</div>
+			</template>
+
+			<template id="row-template">
+				<a href="" class="border-bottom">
+					<img src="" width="32" height="32" class="rounded-circle">
+					<small class="d-inline-block align-bottom text-black ps-1">
+						<strong></strong>
+					</small>
+				</a>
+			</template>
+
+		</div>
+	</div>
+</div>
+
+</html>

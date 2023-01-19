@@ -4,6 +4,59 @@
 
 <mapper namespace="com.example.app.dao.FollowDao">
 
+	<resultMap id="follow" type="com.example.app.domain.Follow">
+		<id property="id" column="id" />
+		<result property="followingId" column="following_id" />
+		<result property="followeeId" column="followee_id" />
+		<result property="createdAt" column="created_at" />
+
+		<collection property="userList" ofType="com.example.app.domain.User">
+			<result property="avatar" column="avatar" />
+			<result property="name" column="name" />
+			<result property="status" column="status" />
+		</collection>
+	</resultMap>
+
+	<!-- フォローしているユーザーリスト -->
+	<select id="selectFollowing" resultMap="follow">
+		SELECT * from follows
+		JOIN
+			(SELECT following_id
+			FROM follows
+			JOIN users
+			ON following_id =users.id) AS following
+		ON follows.following_id = following.following_id
+		JOIN
+			(SELECT followee_id, users.name, users.avatar, users.status
+			FROM follows
+			JOIN users
+			ON followee_id =users.id) AS followee
+		ON follows.followee_id = followee.followee_id
+		WHERE follows.following_id = #{showUserId}
+		GROUP BY follows.id
+		ORDER BY follows.created_at DESC
+	</select>
+
+	<!-- フォローされているユーザーリスト -->
+	<select id="selectFollowee" resultMap="follow">
+		SELECT * from follows
+		JOIN
+			(SELECT following_id, users.name, users.avatar, users.status
+			FROM follows
+			JOIN users
+			ON following_id =users.id) AS following
+		ON follows.following_id = following.following_id
+		JOIN
+			(SELECT followee_id
+			FROM follows
+			JOIN users
+			ON followee_id =users.id) AS followee
+		ON follows.followee_id = followee.followee_id
+		WHERE follows.followee_id = #{showUserId}
+		GROUP BY follows.id
+		ORDER BY follows.created_at DESC
+	</select>
+
 	<!-- フォローしている数 -->
 	<select id="countFollowing" resultType="long">
 		SELECT COUNT(*) FROM follows

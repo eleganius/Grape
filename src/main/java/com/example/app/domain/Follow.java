@@ -1,6 +1,7 @@
 package com.example.app.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -9,11 +10,11 @@ public class Follow {
 
 	//DBフィールド
 	private Integer id;
-	private Integer followerId;
+	private Integer followingId;
 	private Integer followeeId;
 	private Date createdAt;
 
 	//JOINフィールド
-	private User user;
+	private List<User> userList;
 
 }

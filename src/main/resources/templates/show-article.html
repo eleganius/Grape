@@ -27,7 +27,7 @@
 								<a th:href="@{/article/edit/{id}(id=${article.id})}" class="align-baseline me-2">
 									<i class="bi bi-pen me-1"></i>
 								</a>
-								<a th:href="@{/article/delete/{id}(id=${article.id})}" id="deleteArticle"
+								<a th:href="@{/article/delete/{id}(id=${article.id})}" id="delArticle"
 									class="text-danger align-baseline">
 									<i class="bi bi-trash3 me-1"></i>
 								</a>
@@ -97,10 +97,9 @@
 										</span>
 									</small>
 									<!-- コメント削除 -->
-									<div>
-										<i th:if="${session.loginStatus.id == comment.user.id}"
-											class="bi bi-trash3 text-muted d-block ms-auto del" th:data-commentId="${comment.id}"
-											th:data-articleId="${article.id}"></i>
+									<div class="ms-auto">
+										<i th:if="${session.loginStatus.id == comment.user.id}" class="bi bi-trash3 text-muted d-block del"
+											th:data-commentId="${comment.id}" th:data-articleId="${article.id}"></i>
 									</div>
 								</div>
 								<!-- コメント日時 -->
@@ -154,6 +153,18 @@
 	<script th:src="@{/js/iine.js}"></script>
 	<script>
 		$(document).ready(function () {
+
+			//記事削除アラート
+			const $delArticle = $('#delArticle');
+			console.log($delArticle);
+			if ($delArticle) {
+				$delArticle.click(function (e) {
+					const result = confirm("本当に削除しますか？");
+					if (!result) {
+						e.preventDefault();
+					}
+				});
+			}
 
 			//非同期コメント
 			const $div_i = $('#div-i');

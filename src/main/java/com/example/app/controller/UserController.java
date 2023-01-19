@@ -26,7 +26,7 @@ import com.example.app.validation.AddUserGroup;
 @RequestMapping("/user")
 public class UserController {
 
-	private static final int NUM_PER_PAGE = 9;
+	private static final int NUM_PER_PAGE = 6;
 
 	@Autowired
 	UserService userService;

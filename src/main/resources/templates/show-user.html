@@ -9,11 +9,13 @@
 		<div class="container">
 
 			<div class="d-flex justify-content-end align-items-center my-3">
-				<a th:href="@{/user/edit/{id}(id=${user.id})}" class="align-baseline me-2">
+				<a th:if="${session.loginStatus.id == user.id}" th:href="@{/user/edit/{id}(id=${user.id})}"
+					class="align-baseline me-2">
 					<i class="bi bi-person-up me-1"></i>
 					更新
 				</a>
-				<a th:href="@{/user/delete/{id}(id=${user.id})}" id="deleteUser" class="text-danger align-baseline">
+				<a th:if="${session.loginStatus.id == user.id}" th:href="@{/user/delete/{id}(id=${user.id})}" id="deleteUser"
+					class="text-danger align-baseline">
 					<i class="bi bi-person-down me-1"></i>
 					退会
 				</a>
@@ -29,12 +31,12 @@
 								style="border-radius: 50%; object-fit: cover;">
 
 							<!-- フォローボタン -->
-							<button id="addFollowBtn" class="btn btn-sm btn-primary mx-auto" type="button"
-								th:data-showUserId="${user.id}">
-								フォローする</button>
-							<button id="deleteFollowBtn" class="btn btn-sm btn-info mx-auto" type="button"
-								th:data-showUserId="${user.id}">
-								フォロー中</button>
+							<th:block th:unless="${session.loginStatus.id == user.id}">
+								<button th:unless="${user.followIsDone}" id="add" class="btn btn-sm btn-primary mx-auto follow"
+									type="button" th:data-showUserId="${user.id}">フォローする</button>
+								<button th:if="${user.followIsDone}" id="del" class="btn btn-sm btn-info mx-auto follow" type="button"
+									th:data-showUserId="${user.id}">フォロー中</button>
+							</th:block>
 						</div>
 
 						<div class="d-grid gap-2 px-2">
@@ -44,19 +46,19 @@
 							<!-- Button trigger modal -->
 							<div>
 								フォロワー
-								<button id="follower" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
-									data-bs-toggle="modal" data-bs-target="#exampleModal">
+								<button th:data-userId="${user.id}" id="followee" type="button"
+									class="btn btn-sm btn-link text-black fw-bold px-1" data-bs-toggle="modal"
+									data-bs-target="#exampleModal">
 									<span id="followeeCount" style="bottom: 2px; position: relative;">
-										100
-										<!-- user.followingCount -->
+										[[${user.followeeCount}]]
 									</span>
 								</button>
 								フォロー中
-								<button id="following" type="button" class="btn btn-sm btn-link text-black fw-bold px-1"
-									data-bs-toggle="modal" data-bs-target="#exampleModal">
+								<button th:data-userId="${user.id}" id="following" type="button"
+									class="btn btn-sm btn-link text-black fw-bold px-1" data-bs-toggle="modal"
+									data-bs-target="#exampleModal">
 									<span id="followingCount" style="bottom: 2px; position: relative;">
-										100
-										<!-- user.followerCount -->
+										[[${user.followingCount}]]
 									</span>
 								</button>
 							</div>
@@ -90,59 +92,79 @@
 
 		</div>
 	</main>
-	<div th:replace="~{parts/common :: pagination( ${totalPages}, ${currentPage}, 'user/show/1' )}"></div>
+	<div th:replace="~{parts/common :: pagination( ${totalPages}, ${currentPage}, 'user/show/' + ${user.id} )}"></div>
 	<th:block th:replace="~{parts/common :: javascripts()}"></th:block>
 	<script th:src="@{/js/iine.js}"></script>
 	<script th:src="@{/js/huwatto.js}"></script>
+	<script th:src="@{/js/modal.js}"></script>
+	<th:block th:replace="~{parts/modal :: followList()}"></th:block>
 	<script>
 		$(document).ready(function () {
 
+			//非同期フォローボタン
+			let $follows = $('.follow');
+
+			if ($follows !== null) {
+				//追加時
+				$follows.click(function () {
+
+					const $addOrDel = $(this).attr('id');
+					const $showUserId = $follows.data().showuserid;
+
+					switch ($addOrDel) {
+						case "add":
+							$.ajax({
+								url: 'http://localhost:8888/follow/add',
+								type: 'GET',
+								data: {showUserId: $showUserId},
+								context: this,
+							})
+								.done(function (res) {
+									$(this).attr('id', "del");
+									$(this).toggleClass('btn-primary');
+									$(this).toggleClass('btn-info');
+									$(this).text('フォロー中');
+									$('#followeeCount').empty().append(res);
+								})
+								.fail(function () {
+									alert('失敗しました');
+								});
+							break;
+						case "del":
+							$.ajax({
+								url: 'http://localhost:8888/follow/delete',
+								type: 'GET',
+								data: {showUserId: $showUserId},
+								context: this,
+							})
+								.done(function (res) {
+									$(this).attr('id', "add");
+									$(this).toggleClass('btn-primary');
+									$(this).toggleClass('btn-info');
+									$(this).text('フォローする');
+									$('#followeeCount').empty().append(res);
+								})
+								.fail(function () {
+									alert('失敗しました');
+								});
+							break;
+					}
+
+				});
+
+			}
+
 			//退会アラート
 			const deleteUser = document.getElementById('deleteUser');
-			deleteUser.addEventListener('click', e => {
-				const result = confirm("本当に退会しますか？");
-				if (!result) {
-					e.preventDefault();
-				}
-			});
+			if (deleteUser !== null) {
+				deleteUser.addEventListener('click', e => {
+					const result = confirm("本当に退会しますか？");
+					if (!result) {
+						e.preventDefault();
+					}
+				});
+			}
 
-			//非同期フォローボタン
-			const $followeeId_add = $('#addFollowBtn').data().showuserid;
-			const $followeeId_del = $('#deleteFollowBtn').data().showuserid;
-			//追加時
-			$('#addFollowBtn').click(function () {
-				$.ajax({
-					url: 'http://localhost:8888/follow/add',
-					type: 'GET',
-					data: {showUserId: $followeeId_add},
-					context: this,
-				})
-					.done(function (res) {
-						$('#followeeCount').empty().append(res);
-						$(this).hide();
-						$('#deleteFollowBtn').show();
-					})
-					.fail(function () {
-						alert('失敗しました')
-					});
-			});
-			//解除時
-			$('#deleteFollowBtn').click(function () {
-				$.ajax({
-					url: 'http://localhost:8888/follow/delete',
-					type: 'GET',
-					data: {showUserId: $followeeId_del},
-					context: this,
-				})
-					.done(function (res) {
-						$('#followeeCount').empty().append(res);
-						$(this).hide();
-						$('#addFollowBtn').show();
-					})
-					.fail(function () {
-						alert('失敗しました');
-					});
-			});
 		});
 	</script>
 </body>
