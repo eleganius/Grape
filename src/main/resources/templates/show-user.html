@@ -5,6 +5,9 @@
 
 <body>
 	<header th:replace="~{parts/common :: header()}"></header>
+	<div class="alert alert-success my-2" th:if="${message}">
+		[[${message}]]
+	</div>
 	<main>
 		<div class="container">
 

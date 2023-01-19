@@ -12,7 +12,7 @@ public interface UserService {
 
 	User getUserById(Integer id) throws Exception;
 
-	User getUserByIdWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception;
+	User getUserByIdsWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception;
 
 	void addUser(User user, MultipartFile upfile) throws Exception;
 

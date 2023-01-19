@@ -1,7 +1,6 @@
 package com.example.app.controller;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +20,7 @@ import com.example.app.login.LoginStatus;
 import com.example.app.service.ArticleService;
 import com.example.app.service.UserService;
 import com.example.app.validation.AddUserGroup;
+import com.example.app.validation.EditUserGroup;
 
 @Controller
 @RequestMapping("/user")
@@ -44,7 +44,7 @@ public class UserController {
 
 		LoginStatus loginStatus = (LoginStatus) session.getAttribute("loginStatus");
 		Integer loginUserId = loginStatus.getId();
-		model.addAttribute("user", userService.getUserByIdWithFollowCount(loginUserId, id));
+		model.addAttribute("user", userService.getUserByIdsWithFollowCount(loginUserId, id));
 
 		model.addAttribute("currentPage", page);
 
@@ -107,7 +107,7 @@ public class UserController {
 	public String edit(
 			@RequestParam("upfile") MultipartFile upfile,
 			@PathVariable Integer id,
-			@Valid User user,
+			@Validated(EditUserGroup.class) User user,
 			Errors errors,
 			Model model,
 			RedirectAttributes redirectAttributes) throws Exception {

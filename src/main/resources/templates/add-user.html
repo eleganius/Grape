@@ -25,11 +25,15 @@
 						<input type="text" class="form-control" th:field="*{email}">
 						<p><small class="error" th:errors="*{email}"></small></p>
 
-						<label for="emailConf" class="form-label">Email(確認用)</label>
+						<label for="emailConf" class="form-label">Email
+							<small class="text-muted">確認用</small>
+						</label>
 						<input type="text" class="form-control" th:field="*{emailConf}">
 						<p><small class="error" th:errors="*{emailConf}"></small></p>
 
-						<label for="loginPass" class="form-label">パスワード</label>
+						<label for="loginPass" class="form-label">パスワード
+							<small class="text-muted">8～64字</small>
+						</label>
 						<input type="password" class="form-control" th:field="*{loginPass}">
 						<p><small class="error" th:errors="*{loginPass}"></small></p>
 
@@ -41,7 +45,9 @@
 						<input type="date" class="form-control" th:field="*{birthday}">
 						<p><small class="error" th:errors="*{birthday}"></small></p>
 
-						<label for="introduction" class="form-label">自己紹介</label>
+						<label for="introduction" class="form-label">自己紹介
+							<small class="text-muted">140字以内</small>
+						</label>
 						<textarea class="form-control" rows="3" th:field="*{introduction}"></textarea>
 						<p><small class="error" th:errors="*{introduction}"></small></p>
 

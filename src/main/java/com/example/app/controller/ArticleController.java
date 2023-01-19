@@ -44,7 +44,6 @@ public class ArticleController {
 		model.addAttribute("currentPage", page);
 		model.addAttribute("articleList",
 				service.getArticleListByPage(page, NUM_PER_PAGE, loginStatus.getId()));
-		System.out.println(loginStatus);
 		return "list-article";
 	}
 

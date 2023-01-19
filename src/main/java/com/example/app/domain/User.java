@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.app.validation.AddUserGroup;
+import com.example.app.validation.EditUserGroup;
 import com.example.app.validation.LoginGroup;
 
 import lombok.Data;
@@ -22,25 +23,25 @@ public class User {
 	private Integer id;
 	private String avatar;
 
-	@NotBlank(groups = { AddUserGroup.class })
+	@NotBlank(groups = { AddUserGroup.class, EditUserGroup.class })
 	private String name;
 
-	@NotNull(groups = { AddUserGroup.class })
+	@NotNull(groups = { AddUserGroup.class, EditUserGroup.class })
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthday;
 
-	@NotBlank(groups = { AddUserGroup.class, LoginGroup.class })
-	@Email(groups = { AddUserGroup.class })
+	@NotBlank(groups = { AddUserGroup.class, EditUserGroup.class, LoginGroup.class })
+	@Email(groups = { AddUserGroup.class, EditUserGroup.class })
 	private String email;
 
-	@NotBlank(groups = { AddUserGroup.class })
+	@NotBlank(groups = { AddUserGroup.class, EditUserGroup.class })
 	private String emailConf;
 
-	@NotBlank(groups = { AddUserGroup.class, LoginGroup.class })
-	@Length(min = 8, max = 64, groups = { AddUserGroup.class })
+	@NotBlank(groups = { AddUserGroup.class, EditUserGroup.class, LoginGroup.class })
+	@Length(min = 8, max = 64, groups = { AddUserGroup.class, EditUserGroup.class })
 	private String loginPass;
 
-	@Size(max = 140, groups = { AddUserGroup.class })
+	@Size(max = 140, groups = { AddUserGroup.class, EditUserGroup.class })
 	private String introduction;
 
 	private Date createdAt;

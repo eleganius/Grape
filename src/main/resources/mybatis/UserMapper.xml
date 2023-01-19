@@ -20,19 +20,22 @@
 		<result property="followIsDone" column="follow_is_done" />
 	</resultMap>
 
+<!-- ログイン用 -->
 	<select id="selectUserByEmail"
 		resultType="com.example.app.domain.User">
 		SELECT * FROM users
 		WHERE email = #{email}
 	</select>
 
-	<select id="selectById" parameterType="int"
+<!-- ユーザー編集用 -->
+	<select id="selectUserById" parameterType="int"
 		resultType="com.example.app.domain.User">
 		SELECT * FROM users
 		WHERE users.id = #{id}
 	</select>
-	
-	<select id="selectByIdWithFollowCount" resultType="com.example.app.domain.User">
+
+<!-- ユーザー詳細用 -->
+	<select id="selectUserByIdsWithFollowCount" resultType="com.example.app.domain.User">
 		SELECT
 		users.id,
 		users.avatar,

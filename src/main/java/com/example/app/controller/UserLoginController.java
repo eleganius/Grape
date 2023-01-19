@@ -53,8 +53,8 @@ public class UserLoginController {
 			return "login-user";
 		}
 
-		LoginStatus loginStatus = new LoginStatus(user.getId(),
-				user.getName(), user.getEmail(), LoginAuthority.USER);
+		LoginStatus loginStatus = new LoginStatus(
+				user.getId(), user.getName(), user.getEmail(), LoginAuthority.USER);
 		session.setAttribute("loginStatus", loginStatus);
 		return "redirect:/article/list";
 	}

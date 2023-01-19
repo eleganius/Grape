@@ -17,49 +17,52 @@ import com.example.app.domain.User;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserDao userDao;
+	UserDao dao;
 
 	@Override
 	public User getUserByEmail(String email) throws Exception {
-		return userDao.selectUserByEmail(email);
+		return dao.selectUserByEmail(email);
 	}
 
 	@Override
 	public User getUserById(Integer id) throws Exception {
-		return userDao.selectById(id);
+		return dao.selectUserById(id);
 	}
 
 	@Override
-	public User getUserByIdWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception {
-		return userDao.selectByIdWithFollowCount(loginUserId, showUserId);
+	public User getUserByIdsWithFollowCount(Integer loginUserId, Integer showUserId) throws Exception {
+		return dao.selectUserByIdsWithFollowCount(loginUserId, showUserId);
 	}
 
 	@Override
 	public void addUser(User user, MultipartFile upfile) throws Exception {
-		userDao.insert(addEditCommon(user, upfile));
+		dao.insert(addEditCommon(user, upfile));
 	}
 
 	@Override
 	public void editUser(User user, MultipartFile upfile) throws Exception {
-		userDao.update(addEditCommon(user, upfile));
+		dao.update(addEditCommon(user, upfile));
 	}
 
 	@Override
 	public void deleteUserById(Integer id) throws Exception {
-		userDao.setDeleteById(id);
+		dao.setDeleteById(id);
 	}
 
 	//add&edit共通処理
 	private User addEditCommon(User user, MultipartFile upfile) throws Exception {
-
 		if (!upfile.isEmpty()) {
+			//upfileに値があったら
 			String avatar = upfile.getOriginalFilename();
 			user.setAvatar(avatar);
 			Path path = Paths.get("uploads/" + avatar);
 			upfile.transferTo(path);
+		} else if (dao.selectUserById(user.getId()) == null) {
+			//新規ユーザーはDB登録なしのためnull
+			user.setAvatar("user_icon.png"); //デフォルトユーザーアイコン
 		} else {
-			//デフォルトユーザーアイコン
-			user.setAvatar("user_icon.png");
+			//編集ユーザーはDB登録ありのため維持
+			user.setAvatar(dao.selectUserById(user.getId()).getAvatar());
 		}
 
 		user.setLoginPass(BCrypt.hashpw(user.getLoginPass(), BCrypt.gensalt()));
